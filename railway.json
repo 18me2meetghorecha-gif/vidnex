@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd backend_app && gunicorn vidnex_platform.wsgi --log-file -",
+    "startCommand": "gunicorn vidnex_platform.wsgi --bind 0.0.0.0:$PORT --chdir backend_app --log-file -",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
