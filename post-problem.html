@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Post Problem</title>
+  <meta name="description" content="Post an industry problem on Vidnex and invite qualified researchers to submit proposals." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html">Researchers</a>
+      <a href="industry-registration.html">Industry</a>
+      <a href="post-problem.html" aria-current="page">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html">Bid Tracking</a>
+      <a href="industry-bid-overview.html">Bid Overview</a>
+      <a href="money-withdrawal.html">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Post Problem</p>
+      <h1>Turn business challenges into research opportunities.</h1>
+      <p class="lead">Describe your technical or manufacturing problem, define requirements, and start receiving bids from researchers who can deliver a solution.</p>
+    </section>
+
+    <section class="form-grid">
+      <form class="contact-form" action="#" method="post">
+        <label for="problem-title">Problem Title</label>
+        <input id="problem-title" name="problem-title" type="text" required />
+
+        <label for="problem-category">Category</label>
+        <select id="problem-category" name="problem-category">
+          <option>Manufacturing</option>
+          <option>Materials</option>
+          <option>Process Improvement</option>
+          <option>Product R&amp;D</option>
+        </select>
+
+        <label for="timeline">Expected Timeline</label>
+        <input id="timeline" name="timeline" type="text" required />
+
+        <label for="budget">Budget Range</label>
+        <input id="budget" name="budget" type="text" required />
+
+        <label for="problem-details">Problem Details</label>
+        <textarea id="problem-details" name="problem-details" rows="7" required></textarea>
+
+        <button class="btn btn-primary" type="submit">Submit Problem</button>
+      </form>
+
+      <div class="info-card">
+        <h3>Submission guidance</h3>
+        <p>Use the editor area to describe the challenge, current constraints, success criteria, and any supporting technical context that researchers need to prepare a strong bid.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Benefits of Posting</p>
+        <h2>Why industry teams use the platform</h2>
+      </div>
+      <div class="three-col">
+        <article class="card">
+          <h3>Expert Access</h3>
+          <p>Reach researchers with specialized technical knowledge.</p>
+        </article>
+        <article class="card">
+          <h3>Cost Efficiency</h3>
+          <p>Compare proposals and select the best value for your business case.</p>
+        </article>
+        <article class="card">
+          <h3>Innovation Pipeline</h3>
+          <p>Open your challenge to new methods, technologies, and academic insight.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Testimonial Carousel</p>
+        <h2>Results from posted challenges</h2>
+      </div>
+      <div class="cards testimonials-grid">
+        <article class="card testimonial-card">
+          <p>“Posting our issue on Vidnex brought in proposals we would never have sourced internally.”</p>
+          <strong>Production Manager</strong>
+        </article>
+        <article class="card testimonial-card">
+          <p>“The structured form forced us to define the problem well, which improved the quality of bids.”</p>
+          <strong>MSME Founder</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-cta">
+      <p class="eyebrow">Get Started</p>
+      <h2>Publish your challenge and start receiving researcher bids.</h2>
+      <div class="cta-row center-row">
+        <a class="btn btn-primary" href="industry-bid-overview.html">View Bid Selection Flow</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Register</title>
+  <meta name="description" content="Register on Vidnex as a researcher or industry partner." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Researcher Sign Up</p>
+      <h1>Create your researcher account</h1>
+      <p class="lead">Register with your name and Gmail, then complete verification from your profile after login.</p>
+    </section>
+
+    <div class="form-container">
+      <form id="registerForm" class="contact-form" method="POST">
+        <div class="form-group">
+          <label for="register-name">Full Name</label>
+          <input id="register-name" name="name" type="text" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-email">Gmail Address</label>
+          <input id="register-email" name="email" type="email" placeholder="yourname@gmail.com" required />
+          <small id="email-error" class="hidden required-mark">Please use a valid Gmail address.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <input id="register-password" name="password" type="password" minlength="6" required />
+          <small>Minimum 6 characters</small>
+        </div>
+
+        <div class="form-group">
+          <label for="register-password-confirm">Confirm Password</label>
+          <input id="register-password-confirm" name="passwordConfirm" type="password" minlength="6" required />
+        </div>
+
+        <div id="registerMessage" class="form-message hidden"></div>
+
+        <button class="btn btn-primary" type="submit">Create Researcher Account</button>
+
+        <p class="auth-helper">
+          Already have an account? <a href="login.html" class="text-link">Log in here</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const emailInput = document.getElementById("register-email");
+    const emailError = document.getElementById("email-error");
+    const messageDiv = document.getElementById("registerMessage");
+
+    // Validate Gmail on blur
+    emailInput.addEventListener("blur", () => {
+      const isValid = AuthModule.isValidGmail(emailInput.value);
+      emailError.style.display = isValid ? "none" : "block";
+    });
+
+    // Handle form submission
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const formData = {
+        name: document.getElementById("register-name").value,
+        email: document.getElementById("register-email").value,
+        password: document.getElementById("register-password").value,
+        passwordConfirm: document.getElementById("register-password-confirm").value,
+      };
+      submitRegistration(formData);
+    });
+
+    async function submitRegistration(formData) {
+      const result = await AuthModule.register(formData);
+
+      if (result.success) {
+        messageDiv.className = "form-message success";
+        messageDiv.textContent = result.message;
+        messageDiv.style.display = "block";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+      } else {
+        messageDiv.className = "form-message error";
+        messageDiv.textContent = result.error;
+        messageDiv.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

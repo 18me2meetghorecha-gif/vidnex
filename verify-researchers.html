@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Verify Researchers</title>
+  <meta name="description" content="Approve or reject pending researcher profiles." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .verification-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+    .researcher-card { background: #fff; border: 1px solid #ecf0f1; border-radius: 8px; padding: 24px; margin: 16px 0; }
+    .researcher-details { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .detail-item strong { display: block; margin-bottom: 4px; color: #2c3e50; }
+    .action-buttons { display: flex; gap: 10px; margin-top: 14px; }
+    .btn-approve { background: #27ae60; color: #fff; border: none; border-radius: 4px; padding: 10px 16px; cursor: pointer; }
+    .btn-reject { background: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 10px 16px; cursor: pointer; }
+    .no-pending { text-align: center; padding: 36px; background: #f9f9f9; border-radius: 8px; }
+    .reason-box { margin-top: 12px; }
+    .reason-box textarea { width: 100%; min-height: 72px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Verification Panel</p>
+      <h1>Researcher Verification</h1>
+      <p class="lead">Approve/reject pending researcher profiles directly from website data records.</p>
+    </section>
+
+    <div class="verification-container">
+      <div id="pendingResearchers"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    async function renderPendingResearchers() {
+      const pending = await AuthModule.getPendingResearchers();
+      const container = document.getElementById("pendingResearchers");
+
+      if (!pending.length) {
+        container.innerHTML = '<div class="no-pending"><h2>No Pending Verifications</h2><p>All researcher applications are already reviewed.</p></div>';
+        return;
+      }
+
+      container.innerHTML = pending.map((researcher) => {
+        const details = researcher.verification_details || researcher.researcherDetails || {};
+        const docs = details.documents || {};
+        const resumeUrl = details.resume_url || (docs.resume && docs.resume.data) || "#";
+        const certUrl = details.certificates_url || (docs.certificates && docs.certificates.data) || "#";
+        const idUrl = details.id_proof_url || (docs.idProof && docs.idProof.data) || "#";
+        return `
+          <article class="researcher-card">
+            <h3>${researcher.name || researcher.full_name}</h3>
+            <div class="researcher-details">
+              <div class="detail-item"><strong>Email</strong><span>${researcher.email}</span></div>
+              <div class="detail-item"><strong>Applied</strong><span>${researcher.created_at ? new Date(researcher.created_at).toLocaleDateString() : "-"}</span></div>
+              <div class="detail-item"><strong>Work</strong><span>${details.work_company || "-"} | ${details.work_role || "-"} | ${details.work_years || "-"} years</span></div>
+              <div class="detail-item"><strong>Education</strong><span>${details.education_degree || "-"}, ${details.education_university || "-"} (${details.education_year || "-"})</span></div>
+            </div>
+            <div class="info-card">
+              <h3>Documents</h3>
+              <p><a href="${resumeUrl}" target="_blank">Resume</a></p>
+              <p><a href="${certUrl}" target="_blank">Certificate / Degree Proof</a></p>
+              <p><a href="${idUrl}" target="_blank">ID Proof</a></p>
+            </div>
+            <div class="reason-box">
+              <label for="reason-${researcher.id}">Rejection reason (only if rejecting)</label>
+              <textarea id="reason-${researcher.id}" placeholder="Reason for rejection"></textarea>
+            </div>
+            <div class="action-buttons">
+              <button class="btn-approve" onclick="approveResearcher('${researcher.email}')">Approve</button>
+              <button class="btn-reject" onclick="rejectResearcher('${researcher.email}', 'reason-${researcher.id}')">Reject</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function approveResearcher(email) {
+      const result = await AuthModule.verifyResearcher(email, "verified");
+      if (!result.success) { alert(result.error); return; }
+      alert("Researcher approved successfully.");
+      await renderPendingResearchers();
+    }
+
+    async function rejectResearcher(email, reasonId) {
+      const reason = (document.getElementById(reasonId).value || "").trim();
+      if (!reason) { alert("Please add rejection reason before rejecting."); return; }
+      const result = await AuthModule.verifyResearcher(email, "rejected", reason);
+      if (!result.success) { alert(result.error); return; }
+      alert("Researcher rejected.");
+      await renderPendingResearchers();
+    }
+
+    (async () => {
+      if (!AuthModule.getCurrentUser()) {
+        window.location.href = "login.html";
+        return;
+      }
+      await renderPendingResearchers();
+    })();
+  </script>
+</body>
+</html>

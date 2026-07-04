@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Register | Vidnex{% endblock %}
+{% block content %}
+<div class="center-wrap">
+  <section class="card auth-card">
+    <h1>Create Account</h1>
+    <p class="muted">Register using your name, Gmail, and password.</p>
+    <form id="registerForm" class="stack">
+      <label>Full Name
+        <input type="text" name="full_name" required minlength="2" />
+      </label>
+      <label>Email (Gmail)
+        <input type="email" name="email" placeholder="yourname@gmail.com" required />
+      </label>
+      <label>Password
+        <input type="password" name="password" minlength="6" required />
+      </label>
+      <button class="btn btn-primary" type="submit">Register</button>
+      <div id="registerMsg" class="form-message hidden"></div>
+    </form>
+    <p class="muted small">Already registered? <a href="/login/">Login here</a></p>
+  </section>
+</div>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/register.js' %}"></script>
+{% endblock %}

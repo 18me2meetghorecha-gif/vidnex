@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Money Withdrawal for Researchers</title>
+  <meta name="description" content="Manage earnings and withdrawal requests on Vidnex." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html">Researchers</a>
+      <a href="industry-registration.html">Industry</a>
+      <a href="post-problem.html">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html">Bid Tracking</a>
+      <a href="industry-bid-overview.html">Bid Overview</a>
+      <a href="money-withdrawal.html" aria-current="page">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Earnings & Withdrawals</p>
+      <h1>Manage your earnings and withdrawal requests.</h1>
+      <p class="lead">Verified researchers can view earnings summary, transaction history, and request withdrawals.</p>
+    </section>
+
+    <section id="withdrawAccessNotice" class="section hidden"></section>
+
+    <section id="earningsDashboard" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Earnings Section</p>
+        <h2>Earnings snapshot</h2>
+      </div>
+      <div class="stats-grid">
+        <article class="stat-card">
+          <strong id="totalEarnings">0</strong>
+          <span>Total Earnings</span>
+        </article>
+        <article class="stat-card">
+          <strong id="pendingEarnings">0</strong>
+          <span>Pending Earnings</span>
+        </article>
+        <article class="stat-card">
+          <strong id="withdrawnAmount">0</strong>
+          <span>Withdrawn Amount</span>
+        </article>
+        <article class="stat-card">
+          <strong id="availableBalance">0</strong>
+          <span>Available Balance</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="withdrawFormSection" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Withdraw System</p>
+        <h2>Create withdrawal request</h2>
+      </div>
+      <div class="split-layout">
+        <form id="withdrawForm" class="contact-form">
+          <label for="withdraw-amount">Withdrawal Amount (INR)</label>
+          <input id="withdraw-amount" name="amount" type="number" min="1" required />
+
+          <label for="withdraw-method">Payment Method</label>
+          <select id="withdraw-method" name="method" required>
+            <option value="">Select payment method</option>
+            <option value="upi">UPI</option>
+            <option value="bank">Bank</option>
+          </select>
+
+          <label for="withdraw-details">Payment Details (UPI ID / Bank details)</label>
+          <textarea id="withdraw-details" name="details" rows="4" required></textarea>
+
+          <div id="withdrawMessage" class="form-message hidden"></div>
+          <button class="btn btn-primary" type="submit">Submit Withdrawal Request</button>
+        </form>
+
+        <div class="info-card">
+          <h3>Validation Rules</h3>
+          <ul class="clean-list">
+            <li>You must be a verified researcher.</li>
+            <li>Withdrawal amount cannot exceed available balance.</li>
+            <li>Payment details are mandatory.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="historySection" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">History</p>
+        <h2>Transactions and withdrawal requests</h2>
+      </div>
+      <div class="split-layout">
+        <div>
+          <h3>Transaction History</h3>
+          <div id="transactionList" class="cards"></div>
+        </div>
+        <div>
+          <h3>Withdrawal Requests</h3>
+          <div id="withdrawRequestList" class="cards"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    (async () => {
+      const currentUser = AuthModule.getCurrentUser();
+      const accessNotice = document.getElementById("withdrawAccessNotice");
+      const earningsDashboard = document.getElementById("earningsDashboard");
+      const withdrawFormSection = document.getElementById("withdrawFormSection");
+      const historySection = document.getElementById("historySection");
+
+      function formatINR(value) {
+        return `INR ${Number(value || 0).toLocaleString("en-IN")}`;
+      }
+
+      function renderNotice(html) {
+        accessNotice.classList.remove("hidden");
+        accessNotice.innerHTML = html;
+      }
+
+      async function renderEarnings() {
+        const summary = await AuthModule.getEarningsSummary();
+        document.getElementById("totalEarnings").textContent = formatINR(summary.total);
+        document.getElementById("pendingEarnings").textContent = formatINR(summary.pending);
+        document.getElementById("withdrawnAmount").textContent = formatINR(summary.withdrawn);
+        document.getElementById("availableBalance").textContent = formatINR(summary.available);
+      }
+
+      async function renderTransactions() {
+        const list = document.getElementById("transactionList");
+        const txns = await AuthModule.getTransactions();
+        list.innerHTML = txns.length ? txns.map((txn) => `
+          <article class="card">
+            <p><strong>${(txn.txn_type || txn.type || "").toUpperCase()}</strong> | ${formatINR(txn.amount)}</p>
+            <p>Status: ${txn.status}</p>
+            <p>${txn.description || "-"}</p>
+            <p>${txn.created_at ? new Date(txn.created_at).toLocaleString() : "-"}</p>
+          </article>
+        `).join("") : '<article class="card"><p>No transactions yet.</p></article>';
+      }
+
+      async function renderWithdrawRequests() {
+        const list = document.getElementById("withdrawRequestList");
+        const items = await AuthModule.getWithdrawRequests();
+        list.innerHTML = items.length ? items.map((item) => `
+          <article class="card">
+            <p><strong>${formatINR(item.amount)}</strong> (${(item.payment_method || item.paymentMethod || "").toUpperCase()})</p>
+            <p>Status: ${item.status}</p>
+            <p>${item.created_at ? new Date(item.created_at).toLocaleString() : "-"}</p>
+          </article>
+        `).join("") : '<article class="card"><p>No withdrawal requests yet.</p></article>';
+      }
+
+      async function initializeVerifiedView() {
+        earningsDashboard.classList.remove("hidden");
+        withdrawFormSection.classList.remove("hidden");
+        historySection.classList.remove("hidden");
+
+        await renderEarnings();
+        await renderTransactions();
+        await renderWithdrawRequests();
+
+        const form = document.getElementById("withdrawForm");
+        const message = document.getElementById("withdrawMessage");
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const amount = Number(document.getElementById("withdraw-amount").value);
+          const paymentMethod = document.getElementById("withdraw-method").value;
+          const paymentDetails = document.getElementById("withdraw-details").value.trim();
+          const result = await AuthModule.createWithdrawRequest(currentUser.email, { amount, paymentMethod, paymentDetails });
+          if (result.success) {
+            message.className = "form-message success";
+            message.textContent = result.message;
+            message.style.display = "block";
+            form.reset();
+            await renderEarnings();
+            await renderTransactions();
+            await renderWithdrawRequests();
+          } else {
+            message.className = "form-message error";
+            message.textContent = result.error;
+            message.style.display = "block";
+          }
+        });
+      }
+
+      if (!currentUser) {
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Access Restricted</p>
+            <h2>Please log in to access earnings and withdrawal features.</h2>
+          </div>
+          <div class="cta-row"><a class="btn btn-primary" href="login.html">Log In</a></div>
+        `);
+      } else if (currentUser.role !== "researcher") {
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Access Restricted</p>
+            <h2>This section is available only for researcher accounts.</h2>
+          </div>
+        `);
+      } else if (!AuthModule.isResearcherVerified()) {
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Verification Required</p>
+            <h2>Your account is under verification</h2>
+          </div>
+          <p class="lead">Complete verification and wait for approval to access withdrawals.</p>
+          <div class="cta-row"><a class="btn btn-primary" href="profile.html">Go to Profile Verification</a></div>
+        `);
+      } else {
+        await initializeVerifiedView();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Login | Vidnex{% endblock %}
+{% block content %}
+<div class="center-wrap">
+  <section class="card auth-card">
+    <h1>Login</h1>
+    <p class="muted">After login, complete verification to unlock bidding.</p>
+    <form id="loginForm" class="stack">
+      <label>Email
+        <input type="email" name="email" required />
+      </label>
+      <label>Password
+        <input type="password" name="password" required />
+      </label>
+      <button class="btn btn-primary" type="submit">Login</button>
+      <div id="loginMsg" class="form-message hidden"></div>
+    </form>
+    <p class="muted small">New user? <a href="/register/">Create account</a></p>
+  </section>
+</div>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Vidnex | Research Marketplace for Industry Problems{% endblock %}
+
+{% block base_styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="bg-orb orb-a"></div>
+<div class="bg-orb orb-b"></div>
+<header class="site-header">
+  <a class="logo" href="/">Vidnex</a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="/" aria-current="page">Home</a>
+    <a href="/register/">Register</a>
+    <a href="/login/">Login</a>
+    <a href="/verification/">Verification</a>
+    <a href="/dashboard/">Dashboard</a>
+    <a href="/admin-dashboard/">Admin</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero hero-grid reveal">
+    <div>
+      <p class="eyebrow">Marketplace for research collaboration</p>
+      <h1>Where industries post problems and researchers build the solution.</h1>
+      <p class="lead">Vidnex helps MSMEs and research institutions connect through a structured marketplace for posting challenges, bidding on work, selecting experts, processing payments, and withdrawing earnings.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/register/">Register as Researcher</a>
+        <a class="btn btn-ghost" href="/login/">Sign In</a>
+      </div>
+    </div>
+    <aside class="highlight-panel">
+      <h2>Platform Snapshot</h2>
+      <ul class="feature-list">
+        <li>Post manufacturing or R&amp;D problems</li>
+        <li>Receive bids from qualified researchers</li>
+        <li>Select the right proposal with clarity</li>
+        <li>Secure payments and researcher payouts</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="section reveal reveal-delay-1">
+    <div class="section-heading">
+      <p class="eyebrow">About Us</p>
+      <h2>Built to connect industrial challenges with research talent.</h2>
+    </div>
+    <div class="split-layout">
+      <div>
+        <p>Vidnex is a professional and approachable marketplace where industries can post real manufacturing or innovation challenges and researchers can compete to solve them.</p>
+        <p>The platform is designed to simplify problem discovery, proposal evaluation, payment handling, and ongoing collaboration between both sides.</p>
+      </div>
+      <div class="info-card">
+        <h3>Why it works</h3>
+        <p>Clear workflows, transparent bidding, trusted payments, and focused profiles for both researchers and industry teams.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="section-heading">
+      <p class="eyebrow">Our Services</p>
+      <h2>Core marketplace features</h2>
+    </div>
+    <div class="cards" aria-label="Services">
+      <article class="card">
+        <h3>Problem Posting</h3>
+        <p>Industries publish detailed challenges with scope, category, and expected outcomes.</p>
+      </article>
+      <article class="card">
+        <h3>Researcher Bidding</h3>
+        <p>Researchers submit proposals, timelines, and expertise-backed responses.</p>
+      </article>
+      <article class="card">
+        <h3>Bid Evaluation</h3>
+        <p>Industry teams compare bids, review profiles, and select the best-fit researcher.</p>
+      </article>
+      <article class="card">
+        <h3>Payments and Payouts</h3>
+        <p>Companies pay through the platform while researchers manage secure withdrawals.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-cta reveal">
+    <p class="eyebrow">Join Us Today</p>
+    <h2>Start posting, bidding, and solving high-value industry problems.</h2>
+    <div class="cta-row center-row">
+      <a class="btn btn-primary" href="/register/">Join as Researcher</a>
+      <a class="btn btn-ghost" href="/admin-dashboard/">Admin Verification Panel</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> Vidnex</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+</footer>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | My Profile</title>
+  <meta name="description" content="Manage your Vidnex profile." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <span id="userGreeting" class="nav-user-greeting"></span>
+      <a href="#" id="logoutBtn" class="nav-logout">Log Out</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Your Profile</p>
+      <h1 id="profileName">Profile</h1>
+      <p class="lead">Manage your account information and verification status.</p>
+    </section>
+
+    <section id="verificationPrompt" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Researcher Verification</p>
+        <h2 id="verificationPromptTitle">Complete your verification</h2>
+      </div>
+      <p id="verificationPromptMessage" class="lead">Submit your work details, education details, and required documents to unlock bidding and withdrawals.</p>
+      <div class="cta-row">
+        <button id="openVerificationFlow" class="btn btn-primary" type="button">Complete Verification</button>
+      </div>
+    </section>
+
+    <section id="mailInboxSection" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Notification Mailbox</p>
+        <h2>Workflow mails and updates</h2>
+      </div>
+      <div class="cta-row">
+        <button id="markAllMailsReadBtn" class="btn btn-ghost" type="button">Mark All as Read</button>
+      </div>
+      <div id="mailList" class="cards"></div>
+    </section>
+
+    <section id="verifiedResearcherDashboard" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Researcher Dashboard</p>
+        <h2>Approved account controls</h2>
+      </div>
+      <div class="tag-row" id="dashboardTabs">
+        <button class="btn btn-ghost dashboard-tab-btn" type="button" data-target="biddingTab">Bidding Details</button>
+        <button class="btn btn-ghost dashboard-tab-btn" type="button" data-target="statusTab">Bidding Status</button>
+        <button class="btn btn-ghost dashboard-tab-btn" type="button" data-target="earningsTab">Earnings</button>
+        <button class="btn btn-ghost dashboard-tab-btn" type="button" data-target="withdrawalTab">Withdrawal</button>
+      </div>
+
+      <div id="biddingTab" class="section">
+        <h3>Available Projects</h3>
+        <div id="availableProjectsGrid" class="cards"></div>
+      </div>
+
+      <div id="statusTab" class="section hidden">
+        <h3>My Bid Status</h3>
+        <div id="myBidStatusGrid" class="cards"></div>
+        <h3 style="margin-top: 20px;">Allocated Projects</h3>
+        <div id="assignedProjectsGrid" class="cards"></div>
+      </div>
+
+      <div id="earningsTab" class="section hidden">
+        <h3>Earnings Overview</h3>
+        <div class="stats-grid">
+          <article class="stat-card"><strong id="dashTotalEarnings">0</strong><span>Total Earnings</span></article>
+          <article class="stat-card"><strong id="dashPendingEarnings">0</strong><span>Pending Earnings</span></article>
+          <article class="stat-card"><strong id="dashWithdrawnAmount">0</strong><span>Withdrawn Amount</span></article>
+          <article class="stat-card"><strong id="dashAvailableBalance">0</strong><span>Available Balance</span></article>
+        </div>
+      </div>
+
+      <div id="withdrawalTab" class="section hidden">
+        <h3>Create Withdrawal Request</h3>
+        <form id="dashWithdrawForm" class="contact-form">
+          <label for="dash-withdraw-amount">Amount (INR)</label>
+          <input id="dash-withdraw-amount" name="amount" type="number" min="1" required />
+
+          <label for="dash-withdraw-method">Payment Method</label>
+          <select id="dash-withdraw-method" name="method" required>
+            <option value="">Select payment method</option>
+            <option value="upi">UPI</option>
+            <option value="bank">Bank</option>
+          </select>
+
+          <label for="dash-withdraw-details">Payment Details</label>
+          <textarea id="dash-withdraw-details" name="details" rows="3" required></textarea>
+
+          <div id="dashWithdrawMessage" class="form-message hidden"></div>
+          <button class="btn btn-primary" type="submit">Submit Withdrawal Request</button>
+        </form>
+
+        <h3 style="margin-top: 20px;">My Withdrawal Requests</h3>
+        <div id="dashWithdrawRequestGrid" class="cards"></div>
+      </div>
+    </section>
+
+    <div class="profile-container">
+      <div class="profile-section">
+        <h2>Account Information</h2>
+        <div class="info-card">
+          <p><strong>Email:</strong> <span id="profileEmail">—</span></p>
+          <p><strong>Role:</strong> <span id="profileRole">—</span></p>
+          <p><strong>Verification Status:</strong> <span id="profileVerificationStatus">—</span></p>
+          <p><strong>Member Since:</strong> <span id="profileJoinDate">—</span></p>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h2>Edit Profile</h2>
+        <form id="editProfileForm" class="contact-form">
+          <label for="profile-bio">Bio</label>
+          <textarea id="profile-bio" name="bio" rows="4"></textarea>
+
+          <label for="profile-phone">Phone</label>
+          <input id="profile-phone" name="phone" type="tel" />
+
+          <div id="profileMessage" class="form-message hidden"></div>
+
+          <button class="btn btn-primary" type="submit">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function showMessage(node, type, text) {
+      node.className = `form-message ${type}`;
+      node.textContent = text;
+      node.style.display = "block";
+    }
+
+    function readAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => resolve(event.target.result);
+        reader.onerror = () => reject(new Error("Failed to read file."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function formatINR(value) {
+      return `INR ${Number(value || 0).toLocaleString("en-IN")}`;
+    }
+
+    async function initializeVerifiedDashboard(currentUser) {
+      const dashSection = document.getElementById("verifiedResearcherDashboard");
+      const projectGrid = document.getElementById("availableProjectsGrid");
+      const bidGrid = document.getElementById("myBidStatusGrid");
+      const assignedGrid = document.getElementById("assignedProjectsGrid");
+      const withdrawGrid = document.getElementById("dashWithdrawRequestGrid");
+      const withdrawForm = document.getElementById("dashWithdrawForm");
+      const withdrawMessage = document.getElementById("dashWithdrawMessage");
+      const tabButtons = document.querySelectorAll(".dashboard-tab-btn");
+      const tabIds = ["biddingTab", "statusTab", "earningsTab", "withdrawalTab"];
+
+      dashSection.classList.remove("hidden");
+
+      function openTab(targetId) {
+        tabIds.forEach((id) => {
+          const node = document.getElementById(id);
+          if (!node) return;
+          node.classList.toggle("hidden", id !== targetId);
+        });
+      }
+
+      tabButtons.forEach((button, index) => {
+        if (index === 0) {
+          button.classList.add("btn-primary");
+          button.classList.remove("btn-ghost");
+        }
+        button.addEventListener("click", () => {
+          const target = button.getAttribute("data-target");
+          tabButtons.forEach((btn) => {
+            btn.classList.remove("btn-primary");
+            btn.classList.add("btn-ghost");
+          });
+          button.classList.add("btn-primary");
+          button.classList.remove("btn-ghost");
+          openTab(target);
+        });
+      });
+
+      const projects = await AuthModule.getProjects();
+      if (!projects.length) {
+        projectGrid.innerHTML = '<article class="card"><p>No open projects available.</p></article>';
+      } else {
+        projectGrid.innerHTML = projects.map((p) => `
+          <article class="card">
+            <h4>${p.title}</h4>
+            <p><strong>Category:</strong> ${p.category || "-"}</p>
+            <p><strong>Budget:</strong> ${p.budget || (p.min_budget ? "INR " + p.min_budget + " - " + p.max_budget : "-")}</p>
+            <p>${p.description}</p>
+            <form class="contact-form profile-bid-form" data-project-id="${p.id}">
+              <label>Bid Amount (INR)</label>
+              <input type="number" name="bidAmount" min="1" required />
+              <label>Proposal Note</label>
+              <textarea name="proposalNote" rows="3" required></textarea>
+              <button class="btn btn-primary" type="submit">Place Bid</button>
+            </form>
+          </article>
+        `).join("");
+      }
+
+      projectGrid.querySelectorAll(".profile-bid-form").forEach((form) => {
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const projectId = form.getAttribute("data-project-id");
+          const bidAmount = Number(form.querySelector('[name="bidAmount"]').value);
+          const proposalNote = form.querySelector('[name="proposalNote"]').value.trim();
+          const result = await AuthModule.placeBid(currentUser.email, { projectId, amount: bidAmount, proposalNote });
+          if (!result.success) { alert(result.error); return; }
+          form.reset();
+          alert(result.message);
+          await renderBidStatus();
+        });
+      });
+
+      async function renderBidStatus() {
+        const bids = await AuthModule.getUserBids();
+        bidGrid.innerHTML = bids.length ? bids.map((bid) => `
+          <article class="card">
+            <h4>${bid.project_title || bid.projectTitle || "Project"}</h4>
+            <p><strong>Bid Amount:</strong> ${formatINR(bid.amount)}</p>
+            <p><strong>Status:</strong> ${(bid.status || "").replace(/_/g, " ")}</p>
+            <p><strong>Date:</strong> ${bid.created_at ? new Date(bid.created_at).toLocaleDateString() : "-"}</p>
+          </article>
+        `).join("") : '<article class="card"><p>No bids submitted yet.</p></article>';
+
+        const assignments = await AuthModule.getAssignedProjects();
+        if (!assignments.length) {
+          assignedGrid.innerHTML = '<article class="card"><p>No project allocation yet.</p></article>';
+          return;
+        }
+
+        assignedGrid.innerHTML = assignments.map((a) => `
+          <article class="card">
+            <h4>${a.project_title || a.projectTitle || "Project"}</h4>
+            <p><strong>Status:</strong> ${(a.status || "").replace(/_/g, " ")}</p>
+            <p><strong>Timeline:</strong> ${a.timeline || "-"}</p>
+            <p><strong>Expected Submission:</strong> ${a.expected_submission_date || "-"}</p>
+            <p><strong>Project Details:</strong> ${a.project_details || "-"}</p>
+            <p><strong>Response:</strong> ${a.submission_response || "Not submitted yet"}</p>
+            <p><strong>Review:</strong> ${a.review_status || "pending"}${a.review_comment ? " | " + a.review_comment : ""}</p>
+            <p><strong>Earning:</strong> ${formatINR(a.released_earning || a.allocated_earning || 0)}</p>
+            ${!["completed", "submitted"].includes(a.status) ? `
+              <form class="contact-form submit-project-form" data-assignment-id="${a.id}">
+                <label>Submission Response</label>
+                <textarea name="submissionResponse" rows="3" required></textarea>
+                <label>Submission File</label>
+                <input type="file" name="submissionFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required />
+                <button class="btn btn-primary" type="submit">Submit Project Work</button>
+              </form>
+            ` : ""}
+          </article>
+        `).join("");
+
+        assignedGrid.querySelectorAll(".submit-project-form").forEach((form) => {
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const assignmentId = form.getAttribute("data-assignment-id");
+            const response = form.querySelector('[name="submissionResponse"]').value.trim();
+            const file = form.querySelector('[name="submissionFile"]').files[0];
+            if (!file) { alert("Please attach submission file."); return; }
+            try {
+              const dataUrl = await readAsDataUrl(file);
+              const result = await AuthModule.submitProjectDeliverable(currentUser.email, assignmentId, {
+                response, submissionData: dataUrl, fileName: file.name,
+              });
+              if (!result.success) { alert(result.error); return; }
+              alert(result.message);
+              await renderBidStatus();
+            } catch (_) { alert("Could not read file. Please try again."); }
+          });
+        });
+      }
+
+      async function renderEarnings() {
+        const summary = await AuthModule.getEarningsSummary();
+        document.getElementById("dashTotalEarnings").textContent = formatINR(summary.total);
+        document.getElementById("dashPendingEarnings").textContent = formatINR(summary.pending);
+        document.getElementById("dashWithdrawnAmount").textContent = formatINR(summary.withdrawn);
+        document.getElementById("dashAvailableBalance").textContent = formatINR(summary.available);
+      }
+
+      async function renderWithdrawRequests() {
+        const requests = await AuthModule.getWithdrawRequests();
+        withdrawGrid.innerHTML = requests.length ? requests.map((item) => `
+          <article class="card">
+            <h4>${formatINR(item.amount)}</h4>
+            <p><strong>Method:</strong> ${(item.payment_method || item.paymentMethod || "").toUpperCase()}</p>
+            <p><strong>Status:</strong> ${item.status}</p>
+            <p><strong>Date:</strong> ${item.created_at ? new Date(item.created_at).toLocaleString() : "-"}</p>
+          </article>
+        `).join("") : '<article class="card"><p>No withdrawal requests yet.</p></article>';
+      }
+
+      withdrawForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const amount = Number(document.getElementById("dash-withdraw-amount").value);
+        const paymentMethod = document.getElementById("dash-withdraw-method").value;
+        const paymentDetails = document.getElementById("dash-withdraw-details").value.trim();
+        const result = await AuthModule.createWithdrawRequest(currentUser.email, { amount, paymentMethod, paymentDetails });
+        if (result.success) {
+          withdrawMessage.className = "form-message success";
+          withdrawMessage.textContent = result.message;
+          withdrawMessage.style.display = "block";
+          withdrawForm.reset();
+          await renderEarnings();
+          await renderWithdrawRequests();
+        } else {
+          withdrawMessage.className = "form-message error";
+          withdrawMessage.textContent = result.error;
+          withdrawMessage.style.display = "block";
+        }
+      });
+
+      await renderBidStatus();
+      await renderEarnings();
+      await renderWithdrawRequests();
+      openTab("biddingTab");
+    }
+
+    function renderResearcherVerificationPage(currentUser, userProfile) {
+      const status = userProfile.status || "pending_verification";
+      const statusText = { pending_verification: "Verification pending", approved: "Approved", verified: "Verified", rejected: "Verification rejected" }[status] || "Verification pending";
+      const details = userProfile.researcher_details || {};
+      const showResubmit = status === "rejected" || !details.work_company;
+      const rejReason = userProfile.rejection_reason || "";
+      const statusMessage = status === "rejected"
+        ? ("Your previous submission was not approved." + (rejReason ? " Reason: " + rejReason : " Please update and resubmit."))
+        : (status === "pending_verification" && details.work_company)
+          ? "Your details were submitted. Please wait for approval before bidding on projects."
+          : "Complete this verification form to unlock bidding and project access.";
+
+      document.body.innerHTML = `
+        <header class="site-header"><a class="logo" href="index.html">Vidnex</a></header>
+        <main class="page reveal">
+          <section class="page-hero">
+            <p class="eyebrow">Researcher Verification</p>
+            <h1>Hello, ${currentUser.name || currentUser.full_name}</h1>
+            <p class="lead">Status: <strong>${statusText}</strong></p>
+          </section>
+          <section class="section">
+            <div class="notice-box"><strong>Important:</strong> ${statusMessage}</div>
+            ${showResubmit ? `
+            <div class="form-container">
+              <form id="verificationForm" class="contact-form" method="post">
+                <div class="form-group"><label for="verify-work-company">Work Company <span class="required-mark">*</span></label><input id="verify-work-company" type="text" required value="${details.work_company || ""}" /></div>
+                <div class="form-group"><label for="verify-work-role">Work Role <span class="required-mark">*</span></label><input id="verify-work-role" type="text" required value="${details.work_role || ""}" /></div>
+                <div class="form-group"><label for="verify-work-years">Work Years <span class="required-mark">*</span></label><input id="verify-work-years" type="number" min="0" max="60" required value="${details.work_years || ""}" /></div>
+                <div class="form-group"><label for="verify-education-degree">Education Degree <span class="required-mark">*</span></label><input id="verify-education-degree" type="text" required value="${details.education_degree || ""}" /></div>
+                <div class="form-group"><label for="verify-education-university">University <span class="required-mark">*</span></label><input id="verify-education-university" type="text" required value="${details.education_university || ""}" /></div>
+                <div class="form-group"><label for="verify-education-year">Education Year <span class="required-mark">*</span></label><input id="verify-education-year" type="number" min="1950" max="2100" required value="${details.education_year || ""}" /></div>
+                <div class="form-group"><label for="verify-resume">Resume (PDF/Image) <span class="required-mark">*</span></label><input id="verify-resume" type="file" accept=".pdf,.jpg,.jpeg,.png" required /></div>
+                <div class="form-group"><label for="verify-certificate">Certificate (PDF/Image) <span class="required-mark">*</span></label><input id="verify-certificate" type="file" accept=".pdf,.jpg,.jpeg,.png" required /></div>
+                <div class="form-group"><label for="verify-id-proof">ID Proof (PDF/Image) <span class="required-mark">*</span></label><input id="verify-id-proof" type="file" accept=".pdf,.jpg,.jpeg,.png" required /></div>
+                <div id="verifyMessage" class="form-message hidden"></div>
+                <button class="btn btn-primary" type="submit">Submit Verification</button>
+              </form>
+            </div>
+            ` : `
+            <div class="info-card">
+              <h3>Submission Summary</h3>
+              <p><strong>Work:</strong> ${details.work_company ? details.work_company + " | " + details.work_role + " | " + details.work_years + " years" : "Submitted"}</p>
+              <p><strong>Education:</strong> ${details.education_degree ? details.education_degree + ", " + details.education_university + " (" + details.education_year + ")" : "Submitted"}</p>
+              <p><strong>Documents:</strong> Uploaded</p>
+            </div>
+            `}
+            <div class="cta-row">
+              <a href="index.html" class="btn btn-ghost">Back to Home</a>
+              <a href="#" id="logoutBtn" class="btn btn-primary">Log Out</a>
+            </div>
+          </section>
+        </main>
+        <footer class="site-footer"><p>&#169; <span id="year"></span> Vidnex</p><div class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></footer>
+      `;
+
+      document.getElementById("year").textContent = String(new Date().getFullYear());
+      document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+        e.preventDefault();
+        await AuthModule.logout();
+        window.location.href = "index.html";
+      });
+
+      if (!showResubmit) return;
+
+      const verificationForm = document.getElementById("verificationForm");
+      const verifyMessage = document.getElementById("verifyMessage");
+      verificationForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const workCompany = document.getElementById("verify-work-company").value.trim();
+        const workRole = document.getElementById("verify-work-role").value.trim();
+        const workYears = Number(document.getElementById("verify-work-years").value);
+        const educationDegree = document.getElementById("verify-education-degree").value.trim();
+        const educationUniversity = document.getElementById("verify-education-university").value.trim();
+        const educationYear = Number(document.getElementById("verify-education-year").value);
+        const resumeFile = document.getElementById("verify-resume").files[0];
+        const certificateFile = document.getElementById("verify-certificate").files[0];
+        const idProofFile = document.getElementById("verify-id-proof").files[0];
+
+        if (!workCompany || !workRole || !workYears || !educationDegree || !educationUniversity || !educationYear) {
+          showMessage(verifyMessage, "error", "Please complete all fields."); return;
+        }
+        if (!resumeFile || !certificateFile || !idProofFile) {
+          showMessage(verifyMessage, "error", "Please upload all three documents."); return;
+        }
+        if ([resumeFile, certificateFile, idProofFile].some((f) => f.size > 5 * 1024 * 1024)) {
+          showMessage(verifyMessage, "error", "Each file must be under 5MB."); return;
+        }
+
+        try {
+          const [resumeData, certificateData, idProofData] = await Promise.all([
+            readAsDataUrl(resumeFile), readAsDataUrl(certificateFile), readAsDataUrl(idProofFile),
+          ]);
+          const result = await AuthModule.submitResearcherVerification(currentUser.email, {
+            workCompany, workRole, workYears, educationDegree, educationUniversity, educationYear,
+            resumeName: resumeFile.name, resumeData,
+            certificateName: certificateFile.name, certificateData,
+            idProofName: idProofFile.name, idProofData,
+          });
+          if (result.success) {
+            showMessage(verifyMessage, "success", result.message);
+            setTimeout(() => { window.location.reload(); }, 1200);
+          } else {
+            showMessage(verifyMessage, "error", result.error);
+          }
+        } catch (_) {
+          showMessage(verifyMessage, "error", "Could not read uploaded files. Please try again.");
+        }
+      });
+    }
+
+    (async () => {
+      const currentUser = AuthModule.getCurrentUser();
+      if (!currentUser) { window.location.href = "login.html"; return; }
+
+      const freshUser = await AuthModule.refreshMe() || currentUser;
+      const isResearcher = !freshUser.role || freshUser.role === "researcher";
+      const isVerifiedResearcher = AuthModule.isResearcherVerified();
+
+      if (isResearcher && !isVerifiedResearcher) {
+        const promptEl = document.getElementById("verificationPrompt");
+        const titleEl = document.getElementById("verificationPromptTitle");
+        const msgEl = document.getElementById("verificationPromptMessage");
+        const actionBtn = document.getElementById("openVerificationFlow");
+        const status = freshUser.status || "pending_verification";
+        promptEl.classList.remove("hidden");
+        if (status === "pending_verification") {
+          titleEl.textContent = "Verification submitted";
+          msgEl.textContent = "Your account is under verification.";
+          actionBtn.textContent = "View Verification Status";
+        } else if (status === "rejected") {
+          titleEl.textContent = "Verification needs update";
+          msgEl.textContent = "Your previous verification was rejected. Please resubmit.";
+          actionBtn.textContent = "Resubmit Verification";
+        }
+        actionBtn.addEventListener("click", () => { renderResearcherVerificationPage(freshUser, freshUser); });
+      }
+
+      const mailSection = document.getElementById("mailInboxSection");
+      const mailList = document.getElementById("mailList");
+      const markAllMailsReadBtn = document.getElementById("markAllMailsReadBtn");
+
+      async function renderMails() {
+        const mails = await AuthModule.getUserMails();
+        if (!mails.length) { mailList.innerHTML = '<article class="card"><p>No mails yet.</p></article>'; return; }
+        mailList.innerHTML = mails.map((m) => `
+          <article class="card">
+            <p><strong>${m.read ? "Read" : "Unread"}</strong> | ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</p>
+            <h4>${m.subject}</h4>
+            <p>${m.body}</p>
+            ${m.read ? "" : `<button class="btn btn-ghost mark-mail-read-btn" type="button" data-mail-id="${m.id}">Mark as Read</button>`}
+          </article>
+        `).join("");
+        mailList.querySelectorAll(".mark-mail-read-btn").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            await AuthModule.markMailRead(freshUser.email, btn.getAttribute("data-mail-id"));
+            await renderMails();
+          });
+        });
+      }
+
+      mailSection.classList.remove("hidden");
+      markAllMailsReadBtn.addEventListener("click", async () => { await AuthModule.markAllMailsRead(); await renderMails(); });
+      await renderMails();
+
+      document.getElementById("profileName").textContent = freshUser.name || freshUser.full_name || freshUser.email;
+      document.getElementById("userGreeting").textContent = "Hi, " + (freshUser.name || freshUser.full_name || freshUser.email);
+      document.getElementById("profileEmail").textContent = freshUser.email;
+      document.getElementById("profileRole").textContent = isResearcher ? "Researcher" : "Industry Partner";
+      document.getElementById("profileVerificationStatus").textContent = (freshUser.status || "pending_verification").replace(/_/g, " ");
+      document.getElementById("profileJoinDate").textContent = freshUser.created_at ? new Date(freshUser.created_at).toLocaleDateString() : "—";
+
+      if (isResearcher && isVerifiedResearcher) { await initializeVerifiedDashboard(freshUser); }
+
+      document.getElementById("profile-bio").value = freshUser.bio || "";
+      document.getElementById("profile-phone").value = freshUser.phone || "";
+
+      document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+        e.preventDefault();
+        await AuthModule.logout();
+        window.location.href = "index.html";
+      });
+
+      document.getElementById("editProfileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const result = await AuthModule.updateProfile(freshUser.email, {
+          profile: { bio: document.getElementById("profile-bio").value, phone: document.getElementById("profile-phone").value },
+        });
+        const msgDiv = document.getElementById("profileMessage");
+        if (result.success) {
+          msgDiv.className = "form-message success"; msgDiv.textContent = result.message; msgDiv.style.display = "block";
+          setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
+        } else {
+          msgDiv.className = "form-message error"; msgDiv.textContent = result.error; msgDiv.style.display = "block";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

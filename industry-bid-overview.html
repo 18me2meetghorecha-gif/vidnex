@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Bid Overview and Selection</title>
+  <meta name="description" content="Review submitted bids, understand the selection workflow, and choose the right researcher on Vidnex." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-b"></div>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html">Researchers</a>
+      <a href="industry-registration.html">Industry</a>
+      <a href="post-problem.html">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html">Bid Tracking</a>
+      <a href="industry-bid-overview.html" aria-current="page">Bid Overview</a>
+      <a href="money-withdrawal.html">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Bid Overview and Selection for Industry</p>
+      <h1>Review bids with clarity and select the right research partner.</h1>
+      <p class="lead">Vidnex helps industry teams understand the bid pipeline, compare proposals, and confidently move the strongest option toward project execution.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Bid Control Panel</p>
+        <h2>Review bids, select researchers, and review submissions</h2>
+      </div>
+      <div id="industryBidPanel" class="cards"></div>
+    </section>
+
+    <section class="split-layout">
+      <div class="info-card">
+        <p class="eyebrow">How the Bid Process Works</p>
+        <h2>From submission to selection</h2>
+        <p>Researchers submit technical proposals. Your team reviews expertise, scope, methodology, and fit, then shortlists and selects the strongest candidate.</p>
+      </div>
+      <div class="highlight-panel">
+        <h2>Selection priorities</h2>
+        <ul class="feature-list">
+          <li>Technical relevance</li>
+          <li>Delivery confidence</li>
+          <li>Budget alignment</li>
+          <li>Communication clarity</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Withdrawal Management</p>
+        <h2>Process pending researcher withdrawal requests</h2>
+      </div>
+      <div id="withdrawalPanel" class="cards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Services Offered</p>
+        <h2>Bid management support</h2>
+      </div>
+      <div class="three-col">
+        <article class="card">
+          <h3>Bid Submission View</h3>
+          <p>Organize incoming proposals clearly for review.</p>
+        </article>
+        <article class="card">
+          <h3>Evaluation</h3>
+          <p>Compare approaches, expertise, pricing, and timelines side by side.</p>
+        </article>
+        <article class="card">
+          <h3>Selection</h3>
+          <p>Move the chosen researcher into payment and project activation.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-cta">
+      <p class="eyebrow">Get Started with Your Bid</p>
+      <h2>Post a challenge and begin evaluating qualified responses.</h2>
+      <div class="cta-row center-row">
+        <a class="btn btn-primary" href="post-problem.html">Post a Challenge</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Frequently Asked Questions</p>
+        <h2>Support for decision-makers</h2>
+      </div>
+      <div class="faq-grid">
+        <article class="faq-item">
+          <h3>Can multiple team members review bids?</h3>
+          <p>Yes. Selection can involve stakeholders from technical, business, or operations teams.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Do we choose only one researcher?</h3>
+          <p>Usually yes, though projects can also be structured around phased or multi-expert collaboration if needed.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Success Stories</p>
+        <h2>Positive outcomes from bid-based selection</h2>
+      </div>
+      <div class="cards testimonials-grid">
+        <article class="card testimonial-card">
+          <p>“The overview page gave us a much cleaner decision process than managing proposals by email.”</p>
+          <strong>Engineering Director</strong>
+        </article>
+        <article class="card testimonial-card">
+          <p>“We shortlisted quickly because the proposals were easier to compare in one structured flow.”</p>
+          <strong>R&amp;D Lead</strong>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    (async () => {
+      if (!AuthModule.getCurrentUser()) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      function formatINR(value) {
+        return `INR ${Number(value || 0).toLocaleString("en-IN")}`;
+      }
+
+      async function renderIndustryBidPanel() {
+        const panel = document.getElementById("industryBidPanel");
+        const allBids = await AuthModule.getAllBids();
+
+        if (!allBids.length) {
+          panel.innerHTML = '<article class="card"><p>No bids available yet.</p></article>';
+          return;
+        }
+
+        panel.innerHTML = allBids.map((bid) => {
+          const canShortlist = bid.status === "pending";
+          const canSelect = ["pending", "shortlisted"].includes(bid.status);
+          const canReject = ["pending", "shortlisted"].includes(bid.status);
+          const isFinalState = ["allocated", "in_progress", "submitted", "completed", "rejected"].includes(bid.status);
+          const isSubmitted = bid.submission_status === "submitted" || bid.status === "submitted";
+          const assignmentId = bid.assignment_id;
+
+          return `
+            <article class="card">
+              <h3>${bid.project_title || bid.projectTitle || "Project"}</h3>
+              <p><strong>Researcher:</strong> ${bid.researcher_email || bid.email}</p>
+              <p><strong>Amount:</strong> ${formatINR(bid.amount)}</p>
+              <p><strong>Status:</strong> <span class="badge badge-${bid.status}">${(bid.status || "").replace(/_/g, " ")}</span></p>
+              <p><strong>Proposal:</strong> ${bid.proposal_note || bid.proposalNote || "-"}</p>
+
+              ${!isFinalState ? `
+              <div class="cta-row">
+                ${canShortlist ? `<button class="btn btn-ghost status-update-btn" type="button" data-bid-id="${bid.id}" data-status="shortlisted">Shortlist</button>` : ""}
+                ${canSelect ? `<button class="btn btn-primary status-update-btn" type="button" data-bid-id="${bid.id}" data-status="selected" data-amount="${bid.amount}">Select &amp; Allocate</button>` : ""}
+                ${canReject ? `<button class="btn btn-ghost status-update-btn" type="button" data-bid-id="${bid.id}" data-status="rejected">Reject</button>` : ""}
+              </div>
+              ` : ""}
+
+              ${assignmentId ? `
+                <div class="info-card" style="margin-top: 14px;">
+                  <h3>Allocated Project Details</h3>
+                  <p><strong>Timeline:</strong> ${bid.timeline || "-"}</p>
+                  <p><strong>Submission Date:</strong> ${bid.expected_submission_date || "-"}</p>
+                  <p><strong>Details:</strong> ${bid.project_details || "-"}</p>
+                  <p><strong>Response:</strong> ${bid.submission_response || "Not submitted yet"}</p>
+                  <p><strong>Review Status:</strong> ${bid.review_status || "pending"}${bid.review_comment ? " — " + bid.review_comment : ""}</p>
+                  <p><strong>Earning Allocated:</strong> ${formatINR(bid.allocated_earning || 0)}</p>
+                  <p><strong>Earning Released:</strong> ${formatINR(bid.released_earning || 0)}</p>
+                </div>
+              ` : ""}
+
+              ${isSubmitted && assignmentId ? `
+                <form class="contact-form review-form" data-assignment-id="${assignmentId}" style="margin-top: 14px;">
+                  <h4>Submit Review</h4>
+                  <label>Review Status</label>
+                  <select name="reviewStatus" required>
+                    <option value="approved">Approved</option>
+                    <option value="changes_requested">Changes Requested</option>
+                  </select>
+                  <label>Review Comment</label>
+                  <textarea name="reviewComment" rows="3"></textarea>
+                  <label>Earning Amount (INR)</label>
+                  <input type="number" name="earningAmount" min="0" value="${Number(bid.allocated_earning || bid.amount || 0)}" required />
+                  <button class="btn btn-primary" type="submit">Submit Review</button>
+                </form>
+              ` : ""}
+            </article>
+          `;
+        }).join("");
+
+        panel.querySelectorAll(".status-update-btn").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const bidId = button.getAttribute("data-bid-id");
+            const status = button.getAttribute("data-status");
+            const payload = status === "selected" ? {
+              timeline: "8 weeks",
+              expectedSubmissionDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+              projectDetails: "Selected proposal is allocated. Follow project document checklist and timeline.",
+              allocatedEarning: Number(button.getAttribute("data-amount") || 0),
+            } : {};
+            const result = await AuthModule.updateBidStatus(bidId, status, payload);
+            if (!result.success) { alert(result.error); return; }
+            alert(result.message || "Status updated.");
+            await renderIndustryBidPanel();
+          });
+        });
+
+        panel.querySelectorAll(".review-form").forEach((form) => {
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const assignmentId = form.getAttribute("data-assignment-id");
+            const reviewStatus = form.querySelector('[name="reviewStatus"]').value;
+            const reviewComment = form.querySelector('[name="reviewComment"]').value.trim();
+            const earningAmount = Number(form.querySelector('[name="earningAmount"]').value);
+            const result = await AuthModule.reviewProjectSubmission(assignmentId, reviewStatus, reviewComment, earningAmount);
+            if (!result.success) { alert(result.error); return; }
+            alert("Review submitted.");
+            await renderIndustryBidPanel();
+          });
+        });
+      }
+
+      async function renderWithdrawalPanel() {
+        const panel = document.getElementById("withdrawalPanel");
+        if (!panel) return;
+        const requests = await AuthModule.getAllWithdrawRequests();
+        if (!requests.length) {
+          panel.innerHTML = '<article class="card"><p>No withdrawal requests yet.</p></article>';
+          return;
+        }
+        panel.innerHTML = requests.map((req) => `
+          <article class="card">
+            <h4>${req.researcher_email || req.researcherEmail || req.email || "-"}</h4>
+            <p><strong>Amount:</strong> INR ${Number(req.amount).toLocaleString("en-IN")}</p>
+            <p><strong>Method:</strong> ${(req.payment_method || req.paymentMethod || "").toUpperCase()}</p>
+            <p><strong>Details:</strong> ${req.payment_details || req.paymentDetails || "-"}</p>
+            <p><strong>Status:</strong> <strong>${req.status}</strong></p>
+            <p><strong>Requested:</strong> ${req.created_at ? new Date(req.created_at).toLocaleString() : "-"}</p>
+            ${req.status === "pending" ? `
+              <div class="cta-row">
+                <button class="btn btn-primary withdraw-action-btn" type="button" data-id="${req.id}" data-action="completed">Mark Processed</button>
+                <button class="btn btn-ghost withdraw-action-btn" type="button" data-id="${req.id}" data-action="rejected">Reject</button>
+              </div>
+            ` : ""}
+          </article>
+        `).join("");
+
+        panel.querySelectorAll(".withdraw-action-btn").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const id = btn.getAttribute("data-id");
+            const action = btn.getAttribute("data-action");
+            const result = await AuthModule.processWithdrawRequest(id, action);
+            if (!result.success) { alert(result.error); return; }
+            alert(result.message || "Processed.");
+            await renderWithdrawalPanel();
+          });
+        });
+      }
+
+      await renderIndustryBidPanel();
+      await renderWithdrawalPanel();
+    })();
+  </script>
+</body>
+</html>

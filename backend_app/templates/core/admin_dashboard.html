@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Admin Dashboard | Vidnex{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="/admin-dashboard/" class="active">Pending Verification</a>
+    <a href="/admin/" target="_blank" rel="noopener">Open Database Admin</a>
+    <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+  </aside>
+
+  <main class="main-panel">
+    <header class="panel-header">
+      <h1>Pending User Verification</h1>
+    </header>
+
+    <section class="card">
+      <p class="muted">Use the approve/reject form below for each user. For full database access, use Open Database Admin in the sidebar.</p>
+    </section>
+
+    <section class="card">
+      <div id="pendingUsersList" class="stack"></div>
+    </section>
+  </main>
+</div>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/admin-dashboard.js' %}"></script>
+{% endblock %}

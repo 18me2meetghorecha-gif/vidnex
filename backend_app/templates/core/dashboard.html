@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}User Dashboard | Vidnex{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <h2>Vidnex</h2>
+    <button class="side-link active" data-tab="bidding">Bidding</button>
+    <button class="side-link" data-tab="earnings">Earnings</button>
+    <button class="side-link" data-tab="withdraw">Withdraw</button>
+    <a href="/verification/">Verification</a>
+    <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+  </aside>
+
+  <main class="main-panel">
+    <header class="panel-header">
+      <div>
+        <h1 id="welcomeName">Dashboard</h1>
+        <p class="muted">Manage bids, earnings, and withdrawals.</p>
+      </div>
+      <span id="statusBadge" class="status pending">Pending Verification</span>
+    </header>
+
+    <div id="verificationNotice" class="alert warning hidden">Your account is under verification.</div>
+
+    <section id="tab-bidding" class="tab-content active">
+      <div class="card">
+        <h3>Available Projects</h3>
+        <div id="projectsList" class="stack"></div>
+      </div>
+      <div class="card">
+        <h3>My Bid Status</h3>
+        <div id="myBidsList" class="stack"></div>
+      </div>
+    </section>
+
+    <section id="tab-earnings" class="tab-content">
+      <div class="stats-grid">
+        <article class="card stat"><h4>Total</h4><strong id="earnTotal">0</strong></article>
+        <article class="card stat"><h4>Pending</h4><strong id="earnPending">0</strong></article>
+        <article class="card stat"><h4>Withdrawn</h4><strong id="earnWithdrawn">0</strong></article>
+      </div>
+      <div class="card">
+        <h3>Transaction History</h3>
+        <div id="transactionsList" class="stack"></div>
+      </div>
+    </section>
+
+    <section id="tab-withdraw" class="tab-content">
+      <div class="card">
+        <h3>Create Withdrawal Request</h3>
+        <form id="withdrawForm" class="stack">
+          <label>Amount
+            <input type="number" name="amount" min="1" step="0.01" required />
+          </label>
+          <label>Payment Method
+            <select name="payment_method" required>
+              <option value="upi">UPI</option>
+              <option value="bank">Bank</option>
+            </select>
+          </label>
+          <label>Payment Details
+            <textarea name="payment_details" rows="3" required></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Request Withdrawal</button>
+          <div id="withdrawMsg" class="form-message hidden"></div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>My Withdraw Requests</h3>
+        <div id="withdrawList" class="stack"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Bid Tracking for Researchers</title>
+  <meta name="description" content="Track your bids, monitor statuses, and manage research opportunities on Vidnex." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html">Researchers</a>
+      <a href="industry-registration.html">Industry</a>
+      <a href="post-problem.html">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html" aria-current="page">Bid Tracking</a>
+      <a href="industry-bid-overview.html">Bid Overview</a>
+      <a href="money-withdrawal.html">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Bid Tracking for Researchers</p>
+      <h1>Stay on top of every bid you submit.</h1>
+      <p class="lead">Track proposal status, place bids on open projects, and manage your opportunity pipeline with transparency.</p>
+    </section>
+
+    <section id="bidAccessNotice" class="section hidden"></section>
+
+    <section id="biddingDashboard" class="section hidden">
+      <div class="section-heading">
+        <p class="eyebrow">Bidding Dashboard</p>
+        <h2>Available projects and your bid status</h2>
+      </div>
+      <div class="split-layout">
+        <div>
+          <h3>Available Projects</h3>
+          <div id="projectList" class="cards"></div>
+        </div>
+        <div>
+          <h3>My Bids</h3>
+          <div id="myBidList" class="cards"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">How It Works</p>
+        <h2>Simple tracking workflow</h2>
+      </div>
+      <div class="timeline">
+        <article class="timeline-item">
+          <h3>Submit a Bid</h3>
+          <p>Create a proposal with technical direction, timeline, and expected outcomes.</p>
+        </article>
+        <article class="timeline-item">
+          <h3>Monitor Updates</h3>
+          <p>See whether your bid is under review, shortlisted, accepted, or closed.</p>
+        </article>
+        <article class="timeline-item">
+          <h3>Take Action</h3>
+          <p>Move selected bids toward payment and project kickoff.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    (async () => {
+      const currentUser = AuthModule.getCurrentUser();
+      const noticeSection = document.getElementById("bidAccessNotice");
+      const dashboardSection = document.getElementById("biddingDashboard");
+      const projectList = document.getElementById("projectList");
+      const myBidList = document.getElementById("myBidList");
+
+      function renderNotice(html) {
+        noticeSection.classList.remove("hidden");
+        noticeSection.innerHTML = html;
+      }
+
+      async function renderMyBids() {
+        const bids = await AuthModule.getUserBids();
+        myBidList.innerHTML = bids.length ? bids.map((bid) => `
+          <article class="card">
+            <h4>${bid.project_title || bid.projectTitle || "Project"}</h4>
+            <p><strong>Amount:</strong> INR ${Number(bid.amount).toLocaleString("en-IN")}</p>
+            <p><strong>Status:</strong> ${(bid.status || "").replace(/_/g, " ")}</p>
+            <p><strong>Submitted:</strong> ${bid.created_at ? new Date(bid.created_at).toLocaleDateString() : "-"}</p>
+          </article>
+        `).join("") : '<article class="card"><p>No bids submitted yet.</p></article>';
+      }
+
+      async function renderProjects() {
+        const projects = await AuthModule.getProjects();
+        if (!projects.length) {
+          projectList.innerHTML = '<article class="card"><p>No open projects available right now.</p></article>';
+          return;
+        }
+
+        projectList.innerHTML = projects.map((project) => `
+          <article class="card">
+            <h4>${project.title}</h4>
+            <p><strong>Category:</strong> ${project.category || "-"}</p>
+            <p><strong>Budget:</strong> ${project.budget || (project.min_budget ? "INR " + project.min_budget + " - " + project.max_budget : "-")}</p>
+            <p>${project.description}</p>
+            <form class="contact-form" data-project-id="${project.id}">
+              <label>Bid Amount (INR)</label>
+              <input type="number" name="bidAmount" min="1" required />
+              <label>Proposal Note</label>
+              <textarea name="proposalNote" rows="3" required></textarea>
+              <button class="btn btn-primary" type="submit">Place Bid</button>
+            </form>
+          </article>
+        `).join("");
+
+        projectList.querySelectorAll("form[data-project-id]").forEach((form) => {
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const amount = Number(form.querySelector('[name="bidAmount"]').value);
+            const proposalNote = form.querySelector('[name="proposalNote"]').value;
+            const projectId = form.getAttribute("data-project-id");
+            const result = await AuthModule.placeBid(currentUser.email, { projectId, amount, proposalNote });
+            if (!result.success) { alert(result.error); return; }
+            alert(result.message);
+            await renderMyBids();
+          });
+        });
+      }
+
+      if (!currentUser) {
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Access Restricted</p>
+            <h2>Please log in to use bidding features.</h2>
+          </div>
+          <div class="cta-row"><a class="btn btn-primary" href="login.html">Log In</a></div>
+        `);
+      } else if (currentUser.role !== "researcher") {
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Access Restricted</p>
+            <h2>This section is only for researcher accounts.</h2>
+          </div>
+        `);
+      } else if (!AuthModule.canBidOnProjects()) {
+        const status = currentUser.status || "pending_verification";
+        const guidance = status === "pending_verification"
+          ? "Your profile is under verification. You can bid after approval."
+          : status === "rejected"
+            ? "Your verification was rejected. Please update and resubmit in profile."
+            : "Complete your verification profile first.";
+        renderNotice(`
+          <div class="section-heading">
+            <p class="eyebrow">Verification Required</p>
+            <h2>You can bid only after profile verification.</h2>
+          </div>
+          <p class="lead">${guidance}</p>
+          <div class="cta-row"><a class="btn btn-primary" href="profile.html">Go to Profile Verification</a></div>
+        `);
+      } else {
+        dashboardSection.classList.remove("hidden");
+        await renderProjects();
+        await renderMyBids();
+      }
+    })();
+  </script>
+</body>
+</html>

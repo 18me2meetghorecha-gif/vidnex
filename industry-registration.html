@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Industry Registration</title>
+  <meta name="description" content="Register your company on Vidnex to post problems, review bids, and collaborate with qualified researchers." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-b"></div>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html">Researchers</a>
+      <a href="industry-registration.html" aria-current="page">Industry</a>
+      <a href="post-problem.html">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html">Bid Tracking</a>
+      <a href="industry-bid-overview.html">Bid Overview</a>
+      <a href="money-withdrawal.html">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Industry Registration</p>
+      <h1>Welcome to industry registration</h1>
+      <p class="lead">Create your industry profile to post technical problems, compare bids, and choose researchers who can solve your manufacturing or research challenge.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Why Register?</p>
+        <h2>Advantages for industry teams</h2>
+      </div>
+      <div class="icon-grid">
+        <article class="card">
+          <h3>Visibility</h3>
+          <p>Reach a focused network of researchers ready to address real industrial problems.</p>
+        </article>
+        <article class="card">
+          <h3>Expert Access</h3>
+          <p>Compare subject-matter expertise, methods, and timelines before making a selection.</p>
+        </article>
+        <article class="card">
+          <h3>Structured Workflow</h3>
+          <p>Move from problem posting to payment in one organized process.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="form-grid">
+      <form class="contact-form" action="#" method="post">
+        <label for="company-name">Company Name</label>
+        <input id="company-name" name="company-name" type="text" required />
+
+        <label for="company-email">Business Email</label>
+        <input id="company-email" name="company-email" type="email" required />
+
+        <label for="industry-type">Industry Type</label>
+        <input id="industry-type" name="industry-type" type="text" required />
+
+        <label for="contact-person">Contact Person</label>
+        <input id="contact-person" name="contact-person" type="text" required />
+
+        <label for="company-size">Company Size</label>
+        <select id="company-size" name="company-size">
+          <option>1-10 employees</option>
+          <option>11-50 employees</option>
+          <option>51-250 employees</option>
+          <option>250+ employees</option>
+        </select>
+
+        <label for="problem-focus">Typical problem focus</label>
+        <textarea id="problem-focus" name="problem-focus" rows="5" required></textarea>
+
+        <button class="btn btn-primary" type="submit">Register Industry Account</button>
+      </form>
+
+      <div class="info-card">
+        <h3>What happens next</h3>
+        <p>After registration, your team can post problems, review bids, shortlist researchers, and move approved projects into secure payment workflows.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Success Stories</p>
+        <h2>Industry teams using Vidnex</h2>
+      </div>
+      <div class="cards testimonials-grid">
+        <article class="card testimonial-card">
+          <p>“We posted a process optimization challenge and found three highly relevant proposals within days.”</p>
+          <strong>Food Manufacturing Company</strong>
+        </article>
+        <article class="card testimonial-card">
+          <p>“Vidnex gave our team a straightforward way to compare technical bids without wasting time.”</p>
+          <strong>MSME Operations Lead</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Frequently Asked Questions</p>
+        <h2>Common registration questions</h2>
+      </div>
+      <div class="faq-grid">
+        <article class="faq-item">
+          <h3>Who can register?</h3>
+          <p>Manufacturing firms, MSMEs, and innovation-driven organizations can create an industry profile.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Can we post multiple problems?</h3>
+          <p>Yes. Each challenge can have its own scope, requirements, and bid review process.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Do we control final selection?</h3>
+          <p>Yes. Your team reviews proposals and chooses the researcher that best matches your needs.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-cta">
+      <p class="eyebrow">Join Us Today</p>
+      <h2>Create your profile and start sourcing research-backed solutions.</h2>
+      <div class="cta-row center-row">
+        <a class="btn btn-primary" href="post-problem.html">Post a Problem</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

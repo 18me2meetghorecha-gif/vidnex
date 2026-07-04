@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Verification | Vidnex{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <h2>Vidnex</h2>
+    <a href="/dashboard/">Dashboard</a>
+    <a href="/verification/" class="active">Verification</a>
+    <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+  </aside>
+  <main class="main-panel">
+    <header class="panel-header">
+      <h1>Verification Form</h1>
+      <span id="statusBadge" class="status pending">Pending Verification</span>
+    </header>
+
+    <div id="rejectionBox" class="alert danger hidden"></div>
+
+    <section class="card">
+      <p class="muted">Submit your professional details and required documents (PDF/Image) to get verified.</p>
+      <form id="verificationForm" class="grid-2" enctype="multipart/form-data">
+        <label>Company
+          <input type="text" name="work_company" required />
+        </label>
+        <label>Role
+          <input type="text" name="work_role" required />
+        </label>
+        <label>Years of Experience
+          <input type="number" name="work_years" min="0" max="60" required />
+        </label>
+        <label>Degree
+          <input type="text" name="education_degree" required />
+        </label>
+        <label>University
+          <input type="text" name="education_university" required />
+        </label>
+        <label>Graduation Year
+          <input type="number" name="education_year" min="1950" max="2100" required />
+        </label>
+        <label>Resume (PDF/Image)
+          <input type="file" name="resume" accept=".pdf,image/*" required />
+        </label>
+        <label>Certificates (PDF/Image)
+          <input type="file" name="certificates" accept=".pdf,image/*" required />
+        </label>
+        <label>ID Proof (PDF/Image)
+          <input type="file" name="id_proof" accept=".pdf,image/*" required />
+        </label>
+
+        <div class="full-row">
+          <button class="btn btn-primary" type="submit">Submit Verification</button>
+          <div id="verifyMsg" class="form-message hidden"></div>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/verification.js' %}"></script>
+{% endblock %}

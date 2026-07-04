@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Researcher Registration</title>
+  <meta name="description" content="Register as a researcher on Vidnex to access industry problems, submit bids, and get paid for your work." />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <header class="site-header">
+    <a class="logo" href="index.html">Vidnex</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="researcher-registration.html" aria-current="page">Researchers</a>
+      <a href="industry-registration.html">Industry</a>
+      <a href="post-problem.html">Post Problem</a>
+      <a href="payment.html">Payment</a>
+      <a href="bid-tracking.html">Bid Tracking</a>
+      <a href="industry-bid-overview.html">Bid Overview</a>
+      <a href="money-withdrawal.html">Withdrawals</a>
+      <a href="login.html" id="navLoginLink">Login</a>
+    </nav>
+  </header>
+
+  <main class="page reveal">
+    <section class="page-hero">
+      <p class="eyebrow">Researcher Registration</p>
+      <h1>Welcome researchers</h1>
+      <p class="lead">Join Vidnex to discover industry-backed problems, submit bids, collaborate on applied research, and manage earnings in one place.</p>
+      <div class="tag-row">
+        <span class="tag">Applied research opportunities</span>
+        <span class="tag">Transparent bidding</span>
+        <span class="tag">Secure payouts</span>
+      </div>
+    </section>
+
+    <section class="form-grid">
+      <form class="contact-form" action="#" method="post">
+        <label for="researcher-name">Full Name</label>
+        <input id="researcher-name" name="researcher-name" type="text" required />
+
+        <label for="researcher-email">Email</label>
+        <input id="researcher-email" name="researcher-email" type="email" required />
+
+        <label for="institution">Institution</label>
+        <input id="institution" name="institution" type="text" required />
+
+        <label for="specialization">Specialization</label>
+        <input id="specialization" name="specialization" type="text" required />
+
+        <label for="experience">Research Experience</label>
+        <select id="experience" name="experience">
+          <option>0-2 years</option>
+          <option>3-5 years</option>
+          <option>6-10 years</option>
+          <option>10+ years</option>
+        </select>
+
+        <label for="research-summary">Professional Summary</label>
+        <textarea id="research-summary" name="research-summary" rows="5" required></textarea>
+
+        <button class="btn btn-primary" type="submit">Create Researcher Profile</button>
+      </form>
+
+      <div class="info-card">
+        <h3>Registration process</h3>
+        <p>Provide your personal and professional details, highlight your research strengths, and prepare to bid on live industrial problems that match your expertise.</p>
+        <ul class="clean-list">
+          <li>Build your researcher profile</li>
+          <li>Browse active problem listings</li>
+          <li>Submit structured proposals</li>
+          <li>Track bids and payouts</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Why Register?</p>
+        <h2>Benefits designed for researchers</h2>
+      </div>
+      <div class="icon-grid">
+        <article class="card">
+          <h3>Networking</h3>
+          <p>Connect with industry teams seeking academic and applied research support.</p>
+        </article>
+        <article class="card">
+          <h3>Problem Access</h3>
+          <p>View challenges with clear context, business need, and project direction.</p>
+        </article>
+        <article class="card">
+          <h3>Paid Collaboration</h3>
+          <p>Work on funded problems and receive payment through a secure platform workflow.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Success Stories</p>
+        <h2>Researchers winning applied projects</h2>
+      </div>
+      <div class="cards testimonials-grid">
+        <article class="card testimonial-card">
+          <p>“I secured a polymer optimization project through Vidnex and turned it into a long-term consulting relationship.”</p>
+          <strong>Materials Researcher</strong>
+        </article>
+        <article class="card testimonial-card">
+          <p>“The bid structure made it easier to show technical depth and stand out clearly.”</p>
+          <strong>PhD Candidate</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-cta">
+      <p class="eyebrow">Join Us Today</p>
+      <h2>Complete your registration and start bidding on live industry problems.</h2>
+      <div class="cta-row center-row">
+        <a class="btn btn-primary" href="bid-tracking.html">Explore Bid Tracking</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Vidnex</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/header-auth.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
