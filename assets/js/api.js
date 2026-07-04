@@ -103,11 +103,11 @@ const AuthModule = (() => {
     const res = await apiFetch("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
-        full_name: data.fullName || data.full_name || "",
+        full_name: data.fullName || data.full_name || data.name || "",
         email: data.email || "",
         password: data.password || "",
         password_confirm: data.passwordConfirm || data.password_confirm || data.password || "",
-        role: data.role || "user",
+        role: data.role || "researcher",
       }),
     });
     if (!res.success) return { success: false, error: res.error };

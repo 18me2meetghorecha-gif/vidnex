@@ -91,6 +91,7 @@
         email: document.getElementById("register-email").value,
         password: document.getElementById("register-password").value,
         passwordConfirm: document.getElementById("register-password-confirm").value,
+        role: document.querySelector('input[name="role"]:checked')?.value || "researcher",
       };
       submitRegistration(formData);
     });
