@@ -37,9 +37,23 @@ const AuthModule = (() => {
       data = await res.json();
     }
     if (!res.ok) {
-      const msg =
-        data && (data.error || data.detail || data.message) ||
-        "Request failed (" + res.status + ")";
+      let msg = "Request failed (" + res.status + ")";
+      if (data) {
+        if (data.detail) {
+          msg = data.detail;
+        } else if (data.error) {
+          msg = data.error;
+        } else if (data.message) {
+          msg = data.message;
+        } else {
+          // DRF field validation errors: { field: ["error msg"] }
+          const fieldErrors = Object.entries(data)
+            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
+            .join(" | ");
+          if (fieldErrors) msg = fieldErrors;
+        }
+      }
+      console.error("API Error", res.status, data);
       return { success: false, error: msg, status: res.status, data };
     }
     return { success: true, data };
