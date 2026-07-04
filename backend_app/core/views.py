@@ -177,6 +177,7 @@ def register_api(request):
 
         profile = user.profile
         profile.full_name = data["full_name"]
+        profile.role = data.get("role", "researcher")
         profile.status = "pending_verification"
         profile.save()
 

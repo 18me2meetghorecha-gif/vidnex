@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Collect static files
-RUN cd backend_app && python manage.py collectstatic --noinput
+# Collect static files (use dummy key for build only)
+RUN SECRET_KEY=build-time-dummy-key-not-used-in-production cd backend_app && python manage.py collectstatic --noinput
 
 # Expose port
 EXPOSE 8000

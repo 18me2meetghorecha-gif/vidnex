@@ -26,6 +26,7 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(min_length=6, write_only=True)
     password_confirm = serializers.CharField(min_length=6, write_only=True)
+    role = serializers.ChoiceField(choices=["researcher", "industry"], default="researcher")
 
     def validate_email(self, value):
         lowered = value.lower()
