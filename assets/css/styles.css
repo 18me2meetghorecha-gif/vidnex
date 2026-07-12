@@ -438,14 +438,16 @@ small {
 }
 
 .hero .btn-ghost {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--primary);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
 }
 
 .hero .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .cards {
