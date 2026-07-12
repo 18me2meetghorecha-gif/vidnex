@@ -119,6 +119,15 @@ main,
   font-weight: 700;
   letter-spacing: -0.02em;
   font-size: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
 }
 
 .site-nav {
