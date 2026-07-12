@@ -329,16 +329,20 @@ small {
 }
 
 .highlight-panel {
-  background: linear-gradient(135deg, var(--primary-dark), var(--accent));
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  border: 2px solid var(--primary);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
 .highlight-panel h2,
-.highlight-panel h3,
+.highlight-panel h3 {
+  color: var(--primary);
+}
+
 .highlight-panel p,
 .highlight-panel li {
-  color: #fff;
+  color: var(--ink-soft);
 }
 
 .feature-list,
@@ -423,12 +427,25 @@ small {
 .btn-ghost {
   border-color: var(--line);
   color: var(--primary);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
 }
 
 .btn-ghost:hover {
   border-color: var(--primary);
-  background: rgba(76, 183, 214, 0.06);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(76, 183, 214, 0.15);
+}
+
+.hero .btn-ghost {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.hero .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .cards {
