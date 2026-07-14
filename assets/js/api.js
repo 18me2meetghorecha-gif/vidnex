@@ -134,7 +134,8 @@ const AuthModule = (() => {
       body: JSON.stringify({ email, password }),
     });
     if (!res.success) return { success: false, error: res.error };
-    const { token, user } = res.data;
+    const token = res.data.token;
+    const user = res.data;          // backend returns the user object with token embedded
     localStorage.setItem(TOKEN_KEY, token);
     cacheUser(user);
     return { success: true, user };
