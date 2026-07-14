@@ -68,11 +68,16 @@
 
       if (result.success) {
         messageDiv.className = "form-message success";
-        messageDiv.textContent = result.message;
+        messageDiv.textContent = "Login successful. Redirecting…";
         messageDiv.style.display = "block";
         setTimeout(() => {
-          window.location.href = "profile.html";
-        }, 1500);
+          const user = result.user || AuthModule.getCurrentUser();
+          if (user && user.role === "admin") {
+            window.location.href = "admin-dashboard.html";
+          } else {
+            window.location.href = "profile.html";
+          }
+        }, 1200);
       } else {
         messageDiv.className = "form-message error";
         messageDiv.textContent = result.error;

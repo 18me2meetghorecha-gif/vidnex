@@ -196,8 +196,8 @@ const AuthModule = (() => {
         education_year: parseInt(formData.educationYear, 10) || 0,
         resume_data: resumeData,
         resume_name: formData.resumeFile ? formData.resumeFile.name : null,
-        certificates_data: certData,
-        certificates_name: formData.certificatesFile ? formData.certificatesFile.name : null,
+        certificate_data: certData || "",
+        certificate_name: formData.certificatesFile ? formData.certificatesFile.name : "none",
         id_proof_data: idData,
         id_proof_name: formData.idProofFile ? formData.idProofFile.name : null,
       }),
@@ -384,17 +384,36 @@ const AuthModule = (() => {
   }
 
   async function verifyResearcher(email, action, rejectionReason) {
-    // action: "approve" | "reject"
+    // action: "verified" | "rejected"
     const res = await apiFetch("/api/admin/verify-user", {
       method: "POST",
       body: JSON.stringify({
         email,
         action,
-        rejection_reason: rejectionReason || "",
+        reason: rejectionReason || "",
       }),
     });
     if (!res.success) return { success: false, error: res.error };
     return { success: true };
+  }
+
+  async function approveUser(userId) {
+    const res = await apiFetch("/api/admin/users/" + userId + "/approve", { method: "POST" });
+    if (!res.success) return { success: false, error: res.error };
+    return { success: true };
+  }
+
+  async function rejectUser(userId, reason) {
+    const res = await apiFetch("/api/admin/users/" + userId + "/reject", {
+      method: "POST",
+      body: JSON.stringify({ reason: reason || "" }),
+    });
+    if (!res.success) return { success: false, error: res.error };
+    return { success: true };
+  }
+
+  function getApiBase() {
+    return BASE_URL;
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -448,5 +467,8 @@ const AuthModule = (() => {
     // Async admin
     getPendingResearchers,
     verifyResearcher,
+    approveUser,
+    rejectUser,
+    getApiBase,
   };
 })();

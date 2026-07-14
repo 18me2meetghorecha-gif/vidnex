@@ -107,8 +107,8 @@ class VerificationSubmitSerializer(serializers.Serializer):
     education_year = serializers.IntegerField(min_value=1950, max_value=2100)
     resume_name = serializers.CharField(max_length=180)
     resume_data = serializers.CharField()
-    certificate_name = serializers.CharField(max_length=180)
-    certificate_data = serializers.CharField()
+    certificate_name = serializers.CharField(max_length=180, required=False, allow_blank=True, default="none")
+    certificate_data = serializers.CharField(required=False, allow_blank=True, default="")
     id_proof_name = serializers.CharField(max_length=180)
     id_proof_data = serializers.CharField()
 

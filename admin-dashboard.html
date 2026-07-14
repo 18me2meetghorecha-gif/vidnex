@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vidnex | Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=2.0" />
+  <style>
+    /* ── Admin layout ── */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 64px);
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      gap: 32px;
+    }
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { display: flex; flex-wrap: wrap; gap: 10px; }
+    }
+
+    /* ── Sidebar ── */
+    .admin-sidebar {
+      padding: 24px 0;
+      border-right: 1px solid var(--line);
+    }
+    .admin-sidebar h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      padding-left: 4px;
+    }
+    .admin-nav-link {
+      display: block;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: var(--b-md);
+      transition: background 150ms;
+    }
+    .admin-nav-link:hover, .admin-nav-link.active {
+      background: rgba(76,183,214,0.10);
+      color: var(--primary);
+    }
+    .admin-nav-link.active { font-weight: 600; }
+
+    /* ── Main panel ── */
+    .admin-main {
+      padding: 32px 0;
+    }
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .admin-topbar h1 { font-size: 1.6rem; }
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: var(--b-sm);
+      color: var(--muted);
+    }
+    .admin-user-badge strong { color: var(--ink); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-pill {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .stat-pill .num {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-pill .label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ── Researcher card ── */
+    .researcher-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      transition: box-shadow 200ms;
+    }
+    .researcher-card:hover { box-shadow: var(--shadow-md); }
+    .researcher-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .researcher-card-header h3 { font-size: 1.15rem; margin: 0; }
+    .researcher-card-header p { color: var(--muted); font-size: var(--b-sm); margin: 2px 0 0; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-pending  { background: rgba(255,193,7,0.15);  color: #b8860b; }
+    .badge-verified { background: rgba(40,167,69,0.12);  color: #1a7e34; }
+    .badge-rejected { background: rgba(220,53,69,0.12);  color: #b02133; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px 24px;
+      margin-bottom: 16px;
+    }
+    .detail-item { font-size: var(--b-sm); }
+    .detail-item .di-label { color: var(--muted); display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .detail-item .di-value { color: var(--ink); font-weight: 500; }
+
+    .doc-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 16px;
+      background: rgba(76,183,214,0.05);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      margin-bottom: 18px;
+    }
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 150ms, color 150ms;
+    }
+    .doc-link:hover { background: var(--primary); color: #fff; }
+    .doc-link.disabled { border-color: var(--line); color: var(--muted); pointer-events: none; }
+
+    .action-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .action-row textarea {
+      width: 100%;
+      min-height: 60px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      font: inherit;
+      font-size: var(--b-sm);
+      background: var(--paper);
+      resize: vertical;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn-approve {
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      background: #28a745;
+      color: #fff;
+      border: none;
+      font-size: var(--b-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+    .btn-approve:hover { background: #1e7e34; }
+    .btn-approve:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-reject {
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: #dc3545;
+      border: 1.5px solid #dc3545;
+      font-size: var(--b-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms, color 150ms;
+    }
+    .btn-reject:hover { background: #dc3545; color: #fff; }
+    .btn-reject:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .action-feedback {
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      font-size: var(--b-sm);
+      font-weight: 500;
+    }
+    .action-feedback.success { background: rgba(40,167,69,0.1); color: #1a7e34; border: 1px solid rgba(40,167,69,0.3); }
+    .action-feedback.error   { background: rgba(220,53,69,0.08); color: #b02133; border: 1px solid rgba(220,53,69,0.3); }
+
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+    }
+    .empty-state h3 { color: var(--ink); margin-bottom: 8px; }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 16px 0 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    #globalError {
+      padding: 16px 20px;
+      background: rgba(220,53,69,0.08);
+      border: 1px solid rgba(220,53,69,0.3);
+      color: #b02133;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">
+      <img src="assets/images/vidnex-logo.png" alt="Vidnex" class="logo-image" />
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <span id="adminNameBadge" style="font-size:0.85rem;color:var(--muted);"></span>
+      <a href="#" id="adminLogoutBtn">Log Out</a>
+    </nav>
+  </header>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <h2>Admin Panel</h2>
+      <a href="admin-dashboard.html" class="admin-nav-link active">Pending Verifications</a>
+      <a href="profile.html" class="admin-nav-link">Full Dashboard</a>
+      <a href="index.html" class="admin-nav-link">Back to Site</a>
+    </aside>
+
+    <!-- Main content -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h1>Researcher Verifications</h1>
+          <p style="color:var(--muted);margin:0;">Review and approve or reject pending researcher profiles.</p>
+        </div>
+        <div class="admin-user-badge">
+          Logged in as <strong id="adminNameInline">Admin</strong>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-bar">
+        <div class="stat-pill">
+          <span class="num" id="statPending">—</span>
+          <span class="label">Pending</span>
+        </div>
+        <div class="stat-pill">
+          <span class="num" id="statApproved">—</span>
+          <span class="label">Approved Today</span>
+        </div>
+        <div class="stat-pill">
+          <span class="num" id="statRejected">—</span>
+          <span class="label">Rejected Today</span>
+        </div>
+      </div>
+
+      <div id="globalError" class="hidden"></div>
+
+      <!-- Pending list -->
+      <div id="pendingList">
+        <p style="color:var(--muted);">Loading pending profiles…</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="site-footer" style="margin-top:40px;">
+    <p>© <span id="year"></span> Vidnex — Admin Panel</p>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+  (function () {
+    // ── Auth guard ──────────────────────────────────────────────────────────
+    const user = AuthModule.getCurrentUser();
+    if (!user || !AuthModule.isLoggedIn()) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (user.role !== "admin") {
+      window.location.href = "profile.html";
+      return;
+    }
+
+    document.getElementById("adminNameBadge").textContent = user.full_name || user.email;
+    document.getElementById("adminNameInline").textContent = user.full_name || user.email;
+
+    document.getElementById("adminLogoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await AuthModule.logout();
+      window.location.href = "login.html";
+    });
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    const BASE = AuthModule.getApiBase();
+
+    function mediaUrl(url) {
+      if (!url) return null;
+      if (url.startsWith("http")) return url;
+      return BASE.replace(/\/$/, "") + url;
+    }
+
+    function docLink(url, label) {
+      if (!url) return `<span class="doc-link disabled">&#128196; ${label} (not uploaded)</span>`;
+      return `<a class="doc-link" href="${mediaUrl(url)}" target="_blank" rel="noopener">&#128196; ${label}</a>`;
+    }
+
+    function badgeHtml(status) {
+      const map = { pending_verification: "badge-pending", verified: "badge-verified", rejected: "badge-rejected" };
+      const labels = { pending_verification: "Pending", verified: "Verified", rejected: "Rejected" };
+      return `<span class="badge ${map[status] || 'badge-pending'}">${labels[status] || status}</span>`;
+    }
+
+    function fmt(dateStr) {
+      if (!dateStr) return "—";
+      return new Date(dateStr).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    // ── Render ──────────────────────────────────────────────────────────────
+    async function loadDashboard() {
+      const list = document.getElementById("pendingList");
+      list.innerHTML = "<p style='color:var(--muted);'>Loading…</p>";
+
+      const rows = await AuthModule.getPendingResearchers();
+      document.getElementById("statPending").textContent = rows.length;
+      document.getElementById("statApproved").textContent = "—";
+      document.getElementById("statRejected").textContent = "—";
+
+      if (!rows.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <h3>All clear!</h3>
+            <p>No researcher profiles are pending verification right now.</p>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = "";
+
+      rows.forEach((r) => {
+        const v = r.verification_details;
+        const work = v ? v.work : null;
+        const edu  = v ? v.education : null;
+        const docs = v ? v.documents : null;
+
+        const card = document.createElement("article");
+        card.className = "researcher-card";
+        card.dataset.userId = r.id;
+
+        card.innerHTML = `
+          <div class="researcher-card-header">
+            <div>
+              <h3>${escHtml(r.full_name)}</h3>
+              <p>${escHtml(r.email)} &nbsp;·&nbsp; Applied: ${fmt(r.date_joined)}</p>
+            </div>
+            ${badgeHtml(r.status)}
+          </div>
+
+          ${v ? `
+            <p class="section-label">Work History</p>
+            <div class="detail-grid">
+              <div class="detail-item"><span class="di-label">Company / Organisation</span><span class="di-value">${escHtml(work.company || "—")}</span></div>
+              <div class="detail-item"><span class="di-label">Job Role</span><span class="di-value">${escHtml(work.role || "—")}</span></div>
+              <div class="detail-item"><span class="di-label">Years</span><span class="di-value">${work.years || "—"}</span></div>
+            </div>
+
+            <p class="section-label">Education</p>
+            <div class="detail-grid">
+              <div class="detail-item"><span class="di-label">Degree</span><span class="di-value">${escHtml(edu.degree || "—")}</span></div>
+              <div class="detail-item"><span class="di-label">University</span><span class="di-value">${escHtml(edu.university || "—")}</span></div>
+              <div class="detail-item"><span class="di-label">Graduation Year</span><span class="di-value">${edu.year || "—"}</span></div>
+            </div>
+
+            <p class="section-label">Verification Documents</p>
+            <div class="doc-links">
+              ${docLink(docs.resume.url, "Resume / CV")}
+              ${docLink(docs.certificates.url, "Certificates")}
+              ${docLink(docs.id_proof.url, "ID Proof")}
+            </div>
+            <p style="font-size:0.75rem;color:var(--muted);margin-bottom:16px;">Submitted: ${fmt(v.submitted_at)}</p>
+          ` : `
+            <div style="padding:14px 0;color:var(--muted);font-size:var(--b-sm);">
+              No verification documents submitted yet.
+            </div>
+          `}
+
+          <p class="section-label">Decision</p>
+          <div class="action-row">
+            <textarea class="reject-reason-input" placeholder="Rejection reason (required only when rejecting)"></textarea>
+            <div class="action-buttons">
+              <button class="btn-approve approve-btn" type="button">&#10003; Approve</button>
+              <button class="btn-reject reject-btn" type="button">&#10007; Reject</button>
+            </div>
+            <div class="action-feedback hidden"></div>
+          </div>
+        `;
+
+        const reasonInput = card.querySelector(".reject-reason-input");
+        const feedback    = card.querySelector(".action-feedback");
+        const approveBtn  = card.querySelector(".approve-btn");
+        const rejectBtn   = card.querySelector(".reject-btn");
+
+        approveBtn.addEventListener("click", async () => {
+          approveBtn.disabled = true;
+          rejectBtn.disabled  = true;
+          approveBtn.textContent = "Approving…";
+          const res = await AuthModule.approveUser(r.id);
+          if (res.success) {
+            feedback.className = "action-feedback success";
+            feedback.textContent = "Profile approved. Researcher has been notified.";
+            card.querySelector(".badge").outerHTML; // refresh
+            card.querySelector(".badge").className = "badge badge-verified";
+            card.querySelector(".badge").textContent = "Verified";
+            approveBtn.textContent = "Approved";
+          } else {
+            feedback.className = "action-feedback error";
+            feedback.textContent = res.error || "Approval failed.";
+            approveBtn.disabled = false;
+            rejectBtn.disabled  = false;
+            approveBtn.textContent = "✓ Approve";
+          }
+          feedback.classList.remove("hidden");
+          // Refresh stats
+          setTimeout(loadDashboard, 1800);
+        });
+
+        rejectBtn.addEventListener("click", async () => {
+          const reason = reasonInput.value.trim();
+          if (!reason) {
+            feedback.className = "action-feedback error";
+            feedback.textContent = "Please enter a rejection reason before rejecting.";
+            feedback.classList.remove("hidden");
+            reasonInput.focus();
+            return;
+          }
+          rejectBtn.disabled  = true;
+          approveBtn.disabled = true;
+          rejectBtn.textContent = "Rejecting…";
+          const res = await AuthModule.rejectUser(r.id, reason);
+          if (res.success) {
+            feedback.className = "action-feedback success";
+            feedback.textContent = "Profile rejected. Researcher has been notified.";
+            rejectBtn.textContent = "Rejected";
+          } else {
+            feedback.className = "action-feedback error";
+            feedback.textContent = res.error || "Rejection failed.";
+            rejectBtn.disabled  = false;
+            approveBtn.disabled = false;
+            rejectBtn.textContent = "✗ Reject";
+          }
+          feedback.classList.remove("hidden");
+          setTimeout(loadDashboard, 1800);
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    function escHtml(str) {
+      return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    loadDashboard().catch((err) => {
+      const ge = document.getElementById("globalError");
+      ge.textContent = "Failed to load data: " + (err.message || "Unknown error. Are you logged in as admin?");
+      ge.classList.remove("hidden");
+    });
+  })();
+  </script>
+</body>
+</html>

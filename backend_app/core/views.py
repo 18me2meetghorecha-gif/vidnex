@@ -263,7 +263,9 @@ def submit_verification_api(request):
     d = serializer.validated_data
 
     resume_file = serializer._decode_file(d["resume_data"], d["resume_name"])
-    cert_file = serializer._decode_file(d["certificate_data"], d["certificate_name"])
+    cert_data = d.get("certificate_data", "")
+    cert_name = d.get("certificate_name", "none")
+    cert_file = serializer._decode_file(cert_data, cert_name) if cert_data and cert_name not in ("", "none") else None
     id_file = serializer._decode_file(d["id_proof_data"], d["id_proof_name"])
 
     vdetails, _ = VerificationDetail.objects.get_or_create(
