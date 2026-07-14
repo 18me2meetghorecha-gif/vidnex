@@ -58,30 +58,41 @@
     const form = document.getElementById("loginForm");
     const messageDiv = document.getElementById("loginMessage");
 
+    function showMsg(cls, text) {
+      messageDiv.className = "form-message " + cls;
+      messageDiv.textContent = text;
+      messageDiv.style.display = "block";
+      messageDiv.classList.remove("hidden");
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      showMsg("", "Contacting server…");
 
-      const email = document.getElementById("login-email").value;
+      const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
 
-      const result = await AuthModule.login(email, password);
+      let result;
+      try {
+        result = await AuthModule.login(email, password);
+      } catch (err) {
+        showMsg("error", "Network error: " + err.message + ". Check your internet connection.");
+        return;
+      }
 
       if (result.success) {
-        messageDiv.className = "form-message success";
-        messageDiv.textContent = "Login successful. Redirecting…";
-        messageDiv.style.display = "block";
+        const user = result.user || AuthModule.getCurrentUser();
+        const role = user ? user.role : "unknown";
+        showMsg("success", "Login successful (role: " + role + "). Redirecting…");
         setTimeout(() => {
-          const user = result.user || AuthModule.getCurrentUser();
-          if (user && user.role === "admin") {
+          if (role === "admin") {
             window.location.href = "admin-dashboard.html";
           } else {
             window.location.href = "profile.html";
           }
-        }, 1200);
+        }, 1500);
       } else {
-        messageDiv.className = "form-message error";
-        messageDiv.textContent = result.error;
-        messageDiv.style.display = "block";
+        showMsg("error", result.error || "Login failed.");
       }
     });
   </script>
