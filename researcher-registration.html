@@ -39,42 +39,100 @@
     </section>
 
     <section class="form-grid">
-      <form class="contact-form" action="#" method="post">
+      <div id="reg-success" class="reg-success hidden">
+        <div class="success-icon">&#10003;</div>
+        <h2>Profile submitted for verification!</h2>
+        <p>Your details and documents have been received. Our team will review your profile within <strong>24–48 hours</strong>. You will be notified once your account is approved.</p>
+        <a class="btn btn-primary" href="login.html">Go to Login</a>
+      </div>
+
+      <div id="reg-error" class="form-banner error hidden"></div>
+
+      <form id="researcherRegForm" class="contact-form" action="#" method="post">
+
+        <!-- Personal & Professional Details -->
+        <h3 class="form-section-title">Personal &amp; Professional Details</h3>
+
         <label for="researcher-name">Full Name</label>
-        <input id="researcher-name" name="researcher-name" type="text" required />
+        <input id="researcher-name" name="researcher-name" type="text" placeholder="e.g. Dr. Jane Smith" required />
 
-        <label for="researcher-email">Email</label>
-        <input id="researcher-email" name="researcher-email" type="email" required />
+        <label for="researcher-email">Email <span class="field-hint">(Gmail only)</span></label>
+        <input id="researcher-email" name="researcher-email" type="email" placeholder="you@gmail.com" required />
 
-        <label for="institution">Institution</label>
-        <input id="institution" name="institution" type="text" required />
+        <label for="researcher-password">Password <span class="field-hint">(min. 6 characters)</span></label>
+        <input id="researcher-password" name="researcher-password" type="password" placeholder="Create a password" minlength="6" required />
 
-        <label for="specialization">Specialization</label>
-        <input id="specialization" name="specialization" type="text" required />
+        <label for="researcher-password-confirm">Confirm Password</label>
+        <input id="researcher-password-confirm" name="researcher-password-confirm" type="password" placeholder="Repeat your password" minlength="6" required />
+
+        <label for="institution">Institution / University</label>
+        <input id="institution" name="institution" type="text" placeholder="e.g. MIT, IIT Bombay" required />
+
+        <label for="specialization">Specialization / Research Area</label>
+        <input id="specialization" name="specialization" type="text" placeholder="e.g. Machine Learning, Materials Science" required />
 
         <label for="experience">Research Experience</label>
-        <select id="experience" name="experience">
-          <option>0-2 years</option>
-          <option>3-5 years</option>
-          <option>6-10 years</option>
-          <option>10+ years</option>
+        <select id="experience" name="experience" required>
+          <option value="" disabled selected>Select experience range</option>
+          <option value="0-2">0–2 years</option>
+          <option value="3-5">3–5 years</option>
+          <option value="6-10">6–10 years</option>
+          <option value="10+">10+ years</option>
         </select>
 
         <label for="research-summary">Professional Summary</label>
-        <textarea id="research-summary" name="research-summary" rows="5" required></textarea>
+        <textarea id="research-summary" name="research-summary" rows="4" placeholder="Briefly describe your research background, key achievements, and areas of expertise." required></textarea>
 
-        <button class="btn btn-primary" type="submit">Create Researcher Profile</button>
+        <!-- Work History -->
+        <h3 class="form-section-title">Work History</h3>
+
+        <label for="work-company">Current / Most Recent Company or Organisation</label>
+        <input id="work-company" name="work-company" type="text" placeholder="e.g. DRDO, Tata Consultancy Services" required />
+
+        <label for="work-role">Job Role / Designation</label>
+        <input id="work-role" name="work-role" type="text" placeholder="e.g. Senior Research Scientist" required />
+
+        <label for="work-years">Years at This Organisation</label>
+        <input id="work-years" name="work-years" type="number" min="0" max="60" placeholder="e.g. 3" required />
+
+        <!-- Education -->
+        <h3 class="form-section-title">Education</h3>
+
+        <label for="edu-degree">Highest Degree</label>
+        <input id="edu-degree" name="edu-degree" type="text" placeholder="e.g. PhD in Chemical Engineering" required />
+
+        <label for="edu-university">University / Institution</label>
+        <input id="edu-university" name="edu-university" type="text" placeholder="e.g. University of Cambridge" required />
+
+        <label for="edu-year">Graduation Year</label>
+        <input id="edu-year" name="edu-year" type="number" min="1950" max="2030" placeholder="e.g. 2019" required />
+
+        <!-- Document Uploads -->
+        <h3 class="form-section-title">Verification Documents</h3>
+
+        <label for="doc-resume">Resume / CV <span class="field-hint">(PDF or DOC, max 5 MB)</span></label>
+        <input id="doc-resume" name="doc-resume" type="file" accept=".pdf,.doc,.docx" required />
+
+        <label for="doc-certificates">Certificates <span class="field-hint">(Degree, publications, awards — PDF or image, max 5 MB)</span></label>
+        <input id="doc-certificates" name="doc-certificates" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+
+        <label for="doc-id">Government-Issued ID Proof <span class="field-hint">(Passport, Aadhaar, PAN — PDF or image, max 5 MB)</span></label>
+        <input id="doc-id" name="doc-id" type="file" accept=".pdf,.jpg,.jpeg,.png" required />
+
+        <button class="btn btn-primary" id="regSubmitBtn" type="submit">Submit Registration</button>
       </form>
 
       <div class="info-card">
         <h3>Registration process</h3>
-        <p>Provide your personal and professional details, highlight your research strengths, and prepare to bid on live industrial problems that match your expertise.</p>
+        <p>Fill in your personal, work, and education details, upload the required documents, and submit. Your profile will be reviewed and verified before you can bid on live projects.</p>
         <ul class="clean-list">
-          <li>Build your researcher profile</li>
-          <li>Browse active problem listings</li>
-          <li>Submit structured proposals</li>
-          <li>Track bids and payouts</li>
+          <li>Complete all required fields</li>
+          <li>Upload your Resume, Certificates &amp; ID Proof</li>
+          <li>Await verification (usually within 24–48 hrs)</li>
+          <li>Browse &amp; bid on active industry problems</li>
+          <li>Track bids and manage payouts</li>
         </ul>
+        <p class="field-hint" style="margin-top:1rem;">All documents are stored securely and used solely for identity verification.</p>
       </div>
     </section>
 
@@ -133,5 +191,96 @@
   <script src="assets/js/api.js"></script>
   <script src="assets/js/header-auth.js"></script>
   <script src="assets/js/main.js"></script>
+  <script>
+  (function () {
+    const form = document.getElementById('researcherRegForm');
+    const submitBtn = document.getElementById('regSubmitBtn');
+    const errorBanner = document.getElementById('reg-error');
+    const successBox = document.getElementById('reg-success');
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.classList.remove('hidden');
+      errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function clearError() {
+      errorBanner.textContent = '';
+      errorBanner.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      clearError();
+
+      const password = document.getElementById('researcher-password').value;
+      const confirmPassword = document.getElementById('researcher-password-confirm').value;
+      if (password !== confirmPassword) {
+        showError('Passwords do not match.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting\u2026';
+
+      try {
+        // Step 1: Register account
+        const regResult = await AuthModule.register({
+          fullName: document.getElementById('researcher-name').value.trim(),
+          email: document.getElementById('researcher-email').value.trim(),
+          password: password,
+          passwordConfirm: confirmPassword,
+          role: 'researcher',
+        });
+        if (!regResult.success) {
+          showError(regResult.error || 'Registration failed. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Registration';
+          return;
+        }
+
+        // Step 2: Log in to get auth token
+        const loginResult = await AuthModule.login(
+          document.getElementById('researcher-email').value.trim(),
+          password
+        );
+        if (!loginResult.success) {
+          showError('Account created but login failed. Please go to the Login page.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Registration';
+          return;
+        }
+
+        // Step 3: Submit verification details + documents
+        const verifyResult = await AuthModule.submitResearcherVerification({
+          workCompany: document.getElementById('work-company').value.trim(),
+          workRole: document.getElementById('work-role').value.trim(),
+          workYears: document.getElementById('work-years').value,
+          educationDegree: document.getElementById('edu-degree').value.trim(),
+          educationUniversity: document.getElementById('edu-university').value.trim(),
+          educationYear: document.getElementById('edu-year').value,
+          resumeFile: document.getElementById('doc-resume').files[0] || null,
+          certificatesFile: document.getElementById('doc-certificates').files[0] || null,
+          idProofFile: document.getElementById('doc-id').files[0] || null,
+        });
+        if (!verifyResult.success) {
+          showError(verifyResult.error || 'Verification submission failed. Please log in and retry.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Registration';
+          return;
+        }
+
+        // Success — hide form, show confirmation
+        form.classList.add('hidden');
+        successBox.classList.remove('hidden');
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      } catch (err) {
+        showError('An unexpected error occurred. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Registration';
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
