@@ -156,8 +156,9 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:3000,
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'core.views.XTokenAuthentication',          # X-Auth-Token header (Railway-safe)
+        'rest_framework.authentication.TokenAuthentication',   # fallback: Authorization: Token
+        'rest_framework.authentication.SessionAuthentication', # fallback: session cookie
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

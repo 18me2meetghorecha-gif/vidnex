@@ -21,7 +21,10 @@ const AuthModule = (() => {
   function authHeaders() {
     const token = getToken();
     const h = { "Content-Type": "application/json" };
-    if (token) h["Authorization"] = "Token " + token;
+    if (token) {
+      h["X-Auth-Token"] = token;          // Railway-safe custom header
+      h["Authorization"] = "Token " + token; // standard fallback
+    }
     return h;
   }
 
