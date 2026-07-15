@@ -179,6 +179,7 @@ def debug_headers_api(request):
         except Token.DoesNotExist:
             pass
     return Response({
+        "version": "v7",
         "received_headers": relevant,
         "token_raw": raw[:8] + "..." if raw else None,
         "token_in_db": token_exists,
