@@ -13,6 +13,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 
 from .models import (
     Assignment,
@@ -210,6 +211,7 @@ def debug_headers_api(request):
         "token_raw": raw[:8] + "..." if raw else None,
         "token_in_db": token_exists,
         "token_user": token_user,
+        "drf_auth_classes": [str(c) for c in api_settings.DEFAULT_AUTHENTICATION_CLASSES],
     })
 
 
