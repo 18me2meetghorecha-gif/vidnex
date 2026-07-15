@@ -192,7 +192,25 @@ def debug_headers_api(request):
             x in k for x in ["AUTHOR", "X_AUTH", "TOKEN", "COOKIE", "HOST", "ORIGIN"]
         )
     }
-    return Response({"received_headers": relevant})
+    # Also test token lookup directly
+    x_token = request.META.get("HTTP_X_AUTH_TOKEN", "").strip()
+    auth_hdr = request.META.get("HTTP_AUTHORIZATION", "").strip()
+    raw = x_token or (auth_hdr[6:].strip() if auth_hdr.lower().startswith("token ") else "")
+    token_exists = False
+    token_user = None
+    if raw:
+        try:
+            tok = Token.objects.select_related("user").get(key=raw)
+            token_exists = True
+            token_user = tok.user.email
+        except Token.DoesNotExist:
+            pass
+    return Response({
+        "received_headers": relevant,
+        "token_raw": raw[:8] + "..." if raw else None,
+        "token_in_db": token_exists,
+        "token_user": token_user,
+    })
 
 
 # ---------------------------------------------------------------------------
