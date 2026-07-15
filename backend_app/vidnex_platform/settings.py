@@ -162,7 +162,7 @@ CORS_ALLOW_HEADERS = [
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'core.views.XTokenAuthentication',          # X-Auth-Token header (Railway-safe)
+        'core.authentication.XTokenAuthentication',        # X-Auth-Token header (Railway-safe)
         'rest_framework.authentication.TokenAuthentication',   # fallback: Authorization: Token
         'rest_framework.authentication.SessionAuthentication', # fallback: session cookie
     ],

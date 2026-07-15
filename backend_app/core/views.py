@@ -8,10 +8,8 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from rest_framework import permissions, status
-from rest_framework.authentication import BaseAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
@@ -47,32 +45,6 @@ from .serializers import (
     WithdrawRequestSerializer,
     WithdrawSerializer,
 )
-
-
-# ---------------------------------------------------------------------------
-# Custom authentication: accepts token via X-Auth-Token header
-# (Railway's edge proxy strips the standard Authorization header)
-# ---------------------------------------------------------------------------
-
-class XTokenAuthentication(BaseAuthentication):
-    """Read token from X-Auth-Token header as Railway strips Authorization."""
-
-    def authenticate(self, request):
-        raw = request.META.get("HTTP_X_AUTH_TOKEN", "").strip()
-        if not raw:
-            # Also accept standard Authorization: Token xxx as fallback
-            auth = request.META.get("HTTP_AUTHORIZATION", "").strip()
-            if auth.lower().startswith("token "):
-                raw = auth[6:].strip()
-        if not raw:
-            return None
-        try:
-            token_obj = Token.objects.select_related("user").get(key=raw)
-        except Token.DoesNotExist:
-            raise AuthenticationFailed("Invalid or expired token.")
-        if not token_obj.user.is_active:
-            raise AuthenticationFailed("User account is disabled.")
-        return (token_obj.user, token_obj)
 
 
 # ---------------------------------------------------------------------------
