@@ -181,6 +181,20 @@ def admin_dashboard_page(request):
     return render(request, "core/admin_dashboard.html")
 
 
+@api_view(["GET"])
+@permission_classes([permissions.AllowAny])
+def debug_headers_api(request):
+    """Temporary: show which HTTP headers reach Django (Railway proxy diagnostic)."""
+    relevant = {
+        k.replace("HTTP_", "").replace("_", "-").title(): v
+        for k, v in request.META.items()
+        if k.startswith("HTTP_") and any(
+            x in k for x in ["AUTHOR", "X_AUTH", "TOKEN", "COOKIE", "HOST", "ORIGIN"]
+        )
+    }
+    return Response({"received_headers": relevant})
+
+
 # ---------------------------------------------------------------------------
 # Auth API
 # ---------------------------------------------------------------------------
