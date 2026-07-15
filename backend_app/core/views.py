@@ -11,7 +11,6 @@ from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.settings import api_settings
 
 from .models import (
     Assignment,
@@ -152,40 +151,6 @@ def dashboard_page(request):
 
 def admin_dashboard_page(request):
     return render(request, "core/admin_dashboard.html")
-
-
-@api_view(["GET"])
-@permission_classes([permissions.AllowAny])
-def debug_headers_api(request):
-    """Temporary: show which HTTP headers reach Django (Railway proxy diagnostic)."""
-    relevant = {
-        k.replace("HTTP_", "").replace("_", "-").title(): v
-        for k, v in request.META.items()
-        if k.startswith("HTTP_") and any(
-            x in k for x in ["AUTHOR", "X_AUTH", "TOKEN", "COOKIE", "HOST", "ORIGIN"]
-        )
-    }
-    # Also test token lookup directly
-    x_token = request.META.get("HTTP_X_AUTH_TOKEN", "").strip()
-    auth_hdr = request.META.get("HTTP_AUTHORIZATION", "").strip()
-    raw = x_token or (auth_hdr[6:].strip() if auth_hdr.lower().startswith("token ") else "")
-    token_exists = False
-    token_user = None
-    if raw:
-        try:
-            tok = Token.objects.select_related("user").get(key=raw)
-            token_exists = True
-            token_user = tok.user.email
-        except Token.DoesNotExist:
-            pass
-    from django.conf import settings as django_settings
-    return Response({
-        "version": "v8",
-        "token_in_db": token_exists,
-        "token_user": token_user,
-        "drf_raw_settings": django_settings.REST_FRAMEWORK,
-        "drf_auth_classes": [str(c) for c in api_settings.DEFAULT_AUTHENTICATION_CLASSES],
-    })
 
 
 # ---------------------------------------------------------------------------

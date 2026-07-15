@@ -16,7 +16,6 @@ urlpatterns = [
     path("api/auth/logout", views.logout_api, name="logout-api"),
     path("api/auth/me", views.me_api, name="me-api"),
     path("api/profile/update", views.update_profile_api, name="update-profile-api"),
-    path("api/debug/headers", views.debug_headers_api, name="debug-headers-api"),
 
     # Verification API
     path("api/verification/submit", views.submit_verification_api, name="verification-submit-api"),
