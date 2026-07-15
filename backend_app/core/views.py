@@ -178,12 +178,12 @@ def debug_headers_api(request):
             token_user = tok.user.email
         except Token.DoesNotExist:
             pass
+    from django.conf import settings as django_settings
     return Response({
-        "version": "v7",
-        "received_headers": relevant,
-        "token_raw": raw[:8] + "..." if raw else None,
+        "version": "v8",
         "token_in_db": token_exists,
         "token_user": token_user,
+        "drf_raw_settings": django_settings.REST_FRAMEWORK,
         "drf_auth_classes": [str(c) for c in api_settings.DEFAULT_AUTHENTICATION_CLASSES],
     })
 
