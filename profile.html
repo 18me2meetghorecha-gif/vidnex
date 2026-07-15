@@ -26,7 +26,26 @@
       <p class="lead">Manage your account information and verification status.</p>
     </section>
 
-    <section id="verificationPrompt" class="section hidden">
+    <!-- ── Pending verification full-page view ── -->
+    <section id="pendingVerificationView" class="hidden">
+      <div class="verification-status-card">
+        <div class="vs-icon">&#9203;</div>
+        <h2>Profile Under Verification</h2>
+        <p class="lead">Your registration details and documents have been received. Our team is reviewing your profile.</p>
+        <div class="vs-timeline">
+          <div class="vs-step done"><span class="vs-dot">&#10003;</span><span>Registration submitted</span></div>
+          <div class="vs-step done"><span class="vs-dot">&#10003;</span><span>Documents uploaded</span></div>
+          <div class="vs-step active"><span class="vs-dot">&#8987;</span><span>Admin review in progress</span></div>
+          <div class="vs-step"><span class="vs-dot">4</span><span>Account activated</span></div>
+        </div>
+        <p class="vs-note">Typical review time: <strong>24 – 48 hours</strong>. You will receive a notification once your profile is approved or if any changes are needed.</p>
+        <div id="pendingDetailsBox" class="info-card hidden" style="text-align:left;margin-top:1.5rem;"></div>
+        <div class="cta-row" style="margin-top:2rem;justify-content:center;">
+          <a href="index.html" class="btn btn-ghost">Back to Home</a>
+          <button id="pendingLogoutBtn" class="btn btn-primary" type="button">Log Out</button>
+        </div>
+      </div>
+    </section>
       <div class="section-heading">
         <p class="eyebrow">Researcher Verification</p>
         <h2 id="verificationPromptTitle">Complete your verification</h2>
@@ -456,25 +475,48 @@
       if (!currentUser) { window.location.href = "login.html"; return; }
 
       const freshUser = await AuthModule.refreshMe() || currentUser;
+      const status = freshUser.status || "pending_verification";
       const isResearcher = !freshUser.role || freshUser.role === "researcher";
-      const isVerifiedResearcher = AuthModule.isResearcherVerified();
+      const isVerifiedResearcher = status === "verified";
 
-      if (isResearcher && !isVerifiedResearcher) {
+      // ── Pending verification: show dedicated view, hide everything else ──
+      if (isResearcher && status === "pending_verification") {
+        document.getElementById("pendingVerificationView").classList.remove("hidden");
+        document.getElementById("profileName").textContent = freshUser.full_name || freshUser.email;
+
+        // Show submitted details summary if available
+        const rd = freshUser.researcher_details;
+        if (rd && rd.work_company) {
+          const box = document.getElementById("pendingDetailsBox");
+          box.innerHTML = `
+            <h3 style="margin-bottom:12px;">Your Submitted Details</h3>
+            <p><strong>Work:</strong> ${rd.work_company} &mdash; ${rd.work_role} (${rd.work_years} yr)</p>
+            <p><strong>Education:</strong> ${rd.education_degree}, ${rd.education_university} (${rd.education_year})</p>
+          `;
+          box.classList.remove("hidden");
+        }
+
+        document.getElementById("pendingLogoutBtn").addEventListener("click", async () => {
+          await AuthModule.logout();
+          window.location.href = "index.html";
+        });
+        document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+          e.preventDefault(); await AuthModule.logout(); window.location.href = "index.html";
+        });
+        return; // stop here — don't render rest of the page
+      }
+
+      // ── Rejected: show prompt to resubmit ──
+      if (isResearcher && status === "rejected") {
         const promptEl = document.getElementById("verificationPrompt");
         const titleEl = document.getElementById("verificationPromptTitle");
-        const msgEl = document.getElementById("verificationPromptMessage");
+        const msgEl   = document.getElementById("verificationPromptMessage");
         const actionBtn = document.getElementById("openVerificationFlow");
-        const status = freshUser.status || "pending_verification";
         promptEl.classList.remove("hidden");
-        if (status === "pending_verification") {
-          titleEl.textContent = "Verification submitted";
-          msgEl.textContent = "Your account is under verification.";
-          actionBtn.textContent = "View Verification Status";
-        } else if (status === "rejected") {
-          titleEl.textContent = "Verification needs update";
-          msgEl.textContent = "Your previous verification was rejected. Please resubmit.";
-          actionBtn.textContent = "Resubmit Verification";
-        }
+        titleEl.textContent = "Verification rejected";
+        msgEl.textContent = "Your profile was rejected" + (freshUser.rejection_reason ? ": " + freshUser.rejection_reason : ". Please update your details and resubmit.");
+        msgEl.style.color = "#dc3545";
+        actionBtn.textContent = "Resubmit Verification";
         actionBtn.addEventListener("click", () => { renderResearcherVerificationPage(freshUser, freshUser); });
       }
 

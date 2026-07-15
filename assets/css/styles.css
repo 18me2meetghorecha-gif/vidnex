@@ -640,8 +640,64 @@ input[type="file"] {
   cursor: pointer;
 }
 
-.reg-success {
-  max-width: 560px;
+/* ── Verification status card (profile pending view) ── */
+.verification-status-card {
+  max-width: 600px;
+  margin: 0 auto 60px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 3rem 2.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.vs-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.verification-status-card h2 {
+  font-size: 1.7rem;
+  margin-bottom: 0.75rem;
+}
+.vs-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 2rem auto;
+  max-width: 340px;
+  text-align: left;
+}
+.vs-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  font-size: var(--b-sm);
+}
+.vs-step.done  { color: #1a7e34; }
+.vs-step.active { color: var(--primary); font-weight: 600; }
+.vs-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.vs-step.done  .vs-dot { background: #28a745; color: #fff; }
+.vs-step.active .vs-dot { background: var(--primary); color: #fff; }
+.vs-note {
+  font-size: var(--b-sm);
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.reg-success {  max-width: 560px;
   background: linear-gradient(135deg, rgba(76,183,214,0.12) 0%, rgba(76,183,214,0.04) 100%);
   border: 1px solid var(--primary);
   border-radius: var(--radius);
